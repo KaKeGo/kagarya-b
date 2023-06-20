@@ -43,13 +43,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
-    date_created = models.DateTimeField(default=timezone.noe())
+    date_created = models.DateTimeField(default=timezone.now())
     last_login = models.DateTimeField(default=timezone.now())
     
     objects = UserManager()
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['emai', 'username']
+    REQUIRED_FIELDS = ['username']
     
     def __str__(self):
         return f'{self.username} | {self.email}'
