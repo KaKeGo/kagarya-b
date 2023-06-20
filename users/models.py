@@ -33,3 +33,30 @@ class UserManager(BaseUserManager):
                 password,
                 **extra_fields
             )
+        
+    def count_created_users(self):
+        return self.filter(superuser=False).count()
+
+class User(AbstractBaseUser, PermissionsMixin):
+    username = models.CharField(max_length=40, unique=True)
+    email = models.EmailField(max_length=40, unique=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
+    date_created = models.DateTimeField(default=timezone.noe())
+    last_login = models.DateTimeField(default=timezone.now())
+    
+    objects = UserManager()
+    
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['emai', 'username']
+    
+    def __str__(self):
+        return f'{self.username} | {self.email}'
+    
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+        
+    def user_count(self):
+        return User.objects.count_created_users()
