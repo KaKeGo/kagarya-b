@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.contrib.sessions.models import Session
 from django.utils import timezone
 
 # Create your models here.
@@ -92,13 +91,3 @@ class Profile(models.Model):
 
     def get_username(self):
         return self.user.username
-
-    def get_online_status(self):
-        '''Show online status'''
-        if self.user.last_login:
-            session = Session.objects.filter(
-                expire_date__gte=timezone.now(),
-                session_key__in=self.user.session_set.value('session_key'),
-            )
-            return session.exists()
-        return False
