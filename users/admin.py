@@ -30,4 +30,4 @@ class CustomUserAdmin(UserAdmin):
     )
     
 
-admin.site.register(User, CustomUserAdmin)
+admin.site.register([User, CustomUserAdmin])

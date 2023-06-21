@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.sessions.models import Session
 from django.utils import timezone
 
 # Create your models here.
@@ -68,4 +69,32 @@ class User(AbstractBaseUser, PermissionsMixin):
 Profile for users
 '''
 
+def get_default_avatar():
+    '''Default avatar for users'''
+    return 'default/avatar/avatar.jpg'
 
+class Gender(models.Model):
+    name = models.CharField(max_length=10, unique=True)
+    
+    def __str__(self):
+        return self.name
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    avatar = models.ImageField(upload_to='avatars/', default=get_default_avatar)
+    about = models.TextField(blank=True, null=True)
+    motto = models.CharField(max_length=80)
+    gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f'Profile for {self.user.username}'
+
+    def get_online_status(self):
+        '''Show online status'''
+        if self.user.last_login:
+            session = Session.objects.filter(
+                expire_date__gte=timezone.now(),
+                session_key__in=self.user.session_set.value('session_key'),
+            )
+            return session.exists()
+        return False
