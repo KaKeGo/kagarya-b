@@ -4,6 +4,9 @@ from django.utils import timezone
 
 # Create your models here.
 
+'''
+CustomUser model and UserManager
+'''
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -60,3 +63,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         
     def user_count(self):
         return User.objects.count_created_users()
+
+'''
+Profile for users
+'''
+
+
