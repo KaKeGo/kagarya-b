@@ -4,11 +4,17 @@ from django.contrib.auth.admin import UserAdmin
 from .models import (
     User,
 )
+from .forms import (
+    UserCreateForm,
+    UserUpdateForm,
+)
 
 # Register your models here.
 
 
 class CustomUserAdmin(UserAdmin):
+    add_form = UserCreateForm
+    form = UserUpdateForm
     model = User
     list_display = ('username', 'email',)
     list_filter = ('is_staff', 'is_superuser', 'is_active',)
@@ -20,7 +26,7 @@ class CustomUserAdmin(UserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': ('username', 'email', 'password1', 'password2')
-        })
+        }),
     )
     
 
