@@ -47,8 +47,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
-    date_created = models.DateTimeField(default=timezone.now())
-    last_login = models.DateTimeField(default=timezone.now())
+    date_created = models.DateTimeField(default=timezone.now)
+    last_login = models.DateTimeField(default=timezone.now)
     
     objects = UserManager()
     
@@ -83,11 +83,14 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='avatars/', default=get_default_avatar)
     about = models.TextField(blank=True, null=True)
-    motto = models.CharField(max_length=80)
+    motto = models.CharField(max_length=80, blank=True, null=True)
     gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f'Profile for {self.user.username}'
+
+    def get_username(self):
+        return self.user.username
 
     def get_online_status(self):
         '''Show online status'''
