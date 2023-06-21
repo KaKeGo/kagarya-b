@@ -85,6 +85,7 @@ class Profile(models.Model):
     about = models.TextField(blank=True, null=True)
     motto = models.CharField(max_length=80, blank=True, null=True)
     gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True)
 
     def __str__(self):
         return f'Profile for {self.user.username}'
