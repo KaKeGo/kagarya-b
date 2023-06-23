@@ -1,6 +1,6 @@
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout
 
 from rest_framework import permissions, status
 from rest_framework.views import APIView
@@ -82,3 +82,11 @@ class UserLoginView(APIView):
             return Response({'token': token.key})
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserLogoutView(APIView):
+    '''Logout User'''
+    permission_classes = (permissions.IsAuthenticated, )
+    
+    def post(self, request, *args, **kwargs):
+        logout(request)
+        return Response({'success': 'User logged out successfully'})

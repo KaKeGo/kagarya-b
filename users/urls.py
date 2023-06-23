@@ -6,6 +6,7 @@ from . views import (
     UserProfileDetailView,
     UserRegisterView,
     UserLoginView,
+    UserLogoutView,
     
     ProfileListView,
 
@@ -21,6 +22,7 @@ urlpatterns = [
     path('profile/list/', ProfileListView.as_view(), name='profile_list'),
     path('profile/create/', UserRegisterView.as_view(), name='profile_create'),
     path('profile/login/', UserLoginView.as_view(), name='profile_login'),
+    path('profile/logout/', UserLogoutView.as_view(), name='profile_logout'),
     
     path('profile/<slug:slug>/', UserProfileDetailView.as_view(), name='profile_detail'),
 ]
