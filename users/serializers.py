@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from django.contrib.sessions.models import Session
 from django.utils import timezone
-from django.core.exceptions import ValidationError
 
 from .models import (
     User, Profile, Gender
@@ -31,14 +30,19 @@ class UserCreateSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password', 'confirm_password']
 
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError('Username already exists')
+        return value
+
     def validate_password(self, value):
         min_length = 6
         max_length = 20
         
         if len(value) < min_length:
-            raise ValidationError(f'Password must be longer then {min_length}')
+            raise serializers.ValidationError(f'Password must be longer then {min_length}')
         if len(value) > max_length:
-             raise ValidationError(f'Password must be shorter then {max_length}')
+             raise serializers.ValidationError(f'Password must be shorter then {max_length}')
         
     def validate(self, attrs):
         password = attrs.get('password')
