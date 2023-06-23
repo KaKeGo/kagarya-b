@@ -32,11 +32,11 @@ def slug_save(sender, instance, **kwargs):
     if not instance.slug:
         username = instance.user.username
         user_id = instance.user.id
-        slug = f'{slugify(username)}/{user_id}'
+        slug = f'{slugify(username)}i{user_id}'
         
         counter = 1
         while Profile.objects.filter(slug=slug).exists():
-            slug = f'{slug}/{counter}'
+            slug = f'{slug}i{counter}'
             counter += 1
         
         instance.slug = slug
