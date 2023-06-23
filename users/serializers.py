@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from django.contrib.sessions.models import Session
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from .models import (
     User, Profile, Gender
@@ -29,6 +30,13 @@ class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'confirm_password']
+
+    def validate_password(self, value):
+        min_length = 6
+        max_length = 20
+        
+        if len(value) < min_length or len(value) > max_length:
+            raise ValidationError(f'Password must be between {min_length} and {max_length} character long')
         
     def validate(self, attrs):
         password = attrs.get('password')
