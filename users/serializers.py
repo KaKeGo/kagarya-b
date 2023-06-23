@@ -35,8 +35,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
         min_length = 6
         max_length = 20
         
-        if len(value) < min_length or len(value) > max_length:
-            raise ValidationError(f'Password must be between {min_length} and {max_length} character long')
+        if len(value) < min_length:
+            raise ValidationError(f'Password must be longer then {min_length}')
+        if len(value) > max_length:
+             raise ValidationError(f'Password must be shorter then {max_length}')
         
     def validate(self, attrs):
         password = attrs.get('password')
