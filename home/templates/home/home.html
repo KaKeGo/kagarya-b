@@ -1,0 +1,26 @@
+{% extends 'master.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+<div class='container'>
+    <p class='fs-6 fw-light m-4 text-center mx-5'>
+        Create this site for study more drf and i want to have my own site.
+        Then i think its greate idea to lern more about writing site better.
+        Then i using open chat ai to study how to worki with it.
+    </p>
+    <p class='text-center fs-5 font-weight-bold'>
+        Csrf trusted origins only for my front site.
+    </p>
+
+    <div class='card'>
+        <h5 class='card-header p-4 text-center'>Api endpoints</h5>
+
+        {% for category in categorys %}{% endfor %}
+        
+    </div>
+
+</div>
+
+{% endblock  %}
