@@ -90,12 +90,11 @@ WSGI_APPLICATION = 'kagarya.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -161,12 +160,23 @@ if DEBUG is False:
         ],
     }
 
-CORS_ORIGIN_ALLOW_ALL = False
+# CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8000',
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:8000',
+#     'http://127.0.0.1:8000',
+# ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000'
+    'http://127.0.0.1:3000',
+    'http://localhost:8000'
     'http://127.0.0.1:8000',
-]
+ ]
 
 
 django_heroku.settings(locals())
