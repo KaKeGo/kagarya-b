@@ -24,22 +24,27 @@
             <div>
                 <h5 class='card-title ms-5 mt-3'>{{ category.name }} endpoints:</h5>
 
-                <table class="table table-dark table-striped">
-                    <thead>
+                <table class="table table-light table-hover">
+                    <thead class="table-dark">
                       <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Access by</th>
+                        <th scope="col">Name of endpoint</th>
                       </tr>
                     </thead>
+
                     <tbody>
+
+                    {% for link in category.api.all %}
                       <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
+                        <td>{{ link.name }}</td>
+                        <td>{{ link.access }}</td>
+                        <td>
+                            <a href='{{link.url}}'>{{link.url_name}}</a>
+                        </td>
                       </tr>
+                    {% endfor %}
+                    
                     </tbody>
                 </table>
 
