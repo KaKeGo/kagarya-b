@@ -23,7 +23,7 @@ class ApiUrls(models.Model):
 
 class ApiCategory(models.Model):
     name = models.CharField(max_length=100)
-    api = models.ManyToManyField('ApiUrls')
+    api = models.ManyToManyField('ApiUrls', blank=True, null=True)
     
     def __str__(self):
         return self.name

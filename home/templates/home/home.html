@@ -14,10 +14,38 @@
         Csrf trusted origins only for my front site.
     </p>
 
-    <div class='card'>
-        <h5 class='card-header p-4 text-center'>Api endpoints</h5>
+    <div class='container'>
+        <div class='card'>
+            <h5 class='card-header p-4 text-center'>Api endpoints</h5>
+        </div>
 
-        {% for category in categorys %}{% endfor %}
+        {% for category in categorys %}
+        
+            <div>
+                <h5 class='card-title ms-5 mt-3'>{{ category.name }} endpoints:</h5>
+
+                <table class="table table-dark table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Handle</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                      </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        {% endfor %}
         
     </div>
 
