@@ -9,7 +9,7 @@ from .models import Profile, Gender
 User = get_user_model()
 
 
-@receiver(post_save, sender=User)
+@receiver(pre_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     '''Create profile when user create'''
     if created:
