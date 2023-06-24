@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     
     #My App
     'home',
-    'users',
+    'users.apps.UsersConfig',
     
     #Third apps
     'rest_framework',
