@@ -24,6 +24,7 @@ urlpatterns = [
     
     path('', include('home.urls')),
     path('accounts/', include('users.urls')),
+    path('todo/', include('todo.urls')),
 ]
 
 if settings.DEBUG:
