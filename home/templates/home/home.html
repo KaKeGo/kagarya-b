@@ -1,0 +1,59 @@
+{% extends 'master.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+<div class='container'>
+    <p class='fs-6 fw-light m-4 text-center mx-5'>
+        Create this site for study more drf and i want to have my own site.
+        Then i think its greate idea to lern more about writing site better.
+        Then i using open chat ai to study how to worki with it.
+    </p>
+    <p class='text-center fs-5 font-weight-bold'>
+        Csrf trusted origins only for my front site.
+    </p>
+
+    <div class='container'>
+        <div class='card'>
+            <h5 class='card-header p-4 text-center'>Api endpoints</h5>
+        </div>
+
+        {% for category in categorys %}
+        
+            <div>
+                <h5 class='card-title ms-5 mt-3'>{{ category.name }} endpoints:</h5>
+
+                <table class="table table-light table-hover">
+                    <thead class="table-dark">
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Access by</th>
+                        <th scope="col">Name of endpoint</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for link in category.api.all %}
+                      <tr>
+                        <td>{{ link.name }}</td>
+                        <td>{{ link.access }}</td>
+                        <td>
+                            <a href='{{link.url}}'>{{link.url_name}}</a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                    
+                    </tbody>
+                </table>
+
+            </div>
+
+        {% endfor %}
+        
+    </div>
+
+</div>
+
+{% endblock  %}
