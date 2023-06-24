@@ -62,7 +62,7 @@ class UserRegisterView(APIView):
     def post(self, request):
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
+            serializer.save()
             return Response({'success': 'User created successfully'}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer._errors, status=status.HTTP_400_BAD_REQUEST)
@@ -83,6 +83,7 @@ class UserLoginView(APIView):
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
+@method_decorator(csrf_protect, name='dispatch')
 class UserLogoutView(APIView):
     '''Logout User'''
     permission_classes = (permissions.IsAuthenticated, )
