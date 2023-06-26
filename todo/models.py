@@ -21,6 +21,10 @@ class Todo(models.Model):
     def __str__(self):
         return self.name
     
+    @staticmethod
+    def count_todo(self):
+        return Todo.objects.count()
+    
 class Task(models.Model):
     name = models.CharField(max_length=40)
     completed = models.BooleanField(default=False)
