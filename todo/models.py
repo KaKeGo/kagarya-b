@@ -1,5 +1,9 @@
+import random
+import string
+
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.text import slugify
 
 User = get_user_model()
 
@@ -32,6 +36,16 @@ class Todo(models.Model):
     @staticmethod
     def count_todo():
         return Todo.objects.count()
+    
+    def random_slug(self, length):
+        r_slug = string.ascii_letters + string.digits
+        return ''.join(random.choice(r_slug) for _ in range(length))
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            r_slug = self.random_slug(10)
+            self.slug = slugify(self.name + '-' + r_slug)
+        super().save(*args, **kwargs)
     
 class Task(models.Model):
     name = models.CharField(max_length=40)
