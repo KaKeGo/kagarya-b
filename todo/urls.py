@@ -12,7 +12,7 @@ app_name = 'todo'
 
 
 urlpatterns = [
-    path('plan/', TodoPlanView.as_view(), name='plan'),
+    path('plan/<slug>/', TodoPlanView.as_view(), name='plan'),
     
     path('<slug>/', TodoDetailView.as_view(), name='todo_detail'),
     

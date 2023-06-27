@@ -39,7 +39,7 @@ class TodoPlanListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = TodoPlan
-        fields = ['id', 'author', 'name', 'todo',]
+        fields = ['id', 'author', 'name', 'todo', 'slug']
         
     def get_author(self, obj):
         return obj.author.username

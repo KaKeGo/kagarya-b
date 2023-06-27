@@ -26,9 +26,9 @@ from .models import (
 class TodoPlanView(APIView):
     permission_classes = (permissions.AllowAny, )
     
-    def get(self, request):
+    def get(self, request, slug):
         user = request.user
-        todo_plan = TodoPlan.objects.filter(author=user)
+        todo_plan = TodoPlan.objects.filter(author=user, slug=slug)
         serializer = TodoPlanListSerializer(todo_plan, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
