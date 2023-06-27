@@ -7,16 +7,19 @@ from .models import (
 )
 
 
+'''Category Serializer'''
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TodoCategory
         fields = ['id', 'name']
 
+'''Task Serializer'''
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['id', 'name', 'completed']
 
+'''Todo Serializers'''
 class TodoSerializer(serializers.ModelSerializer):
     category = CategorySerializer(many=True)
     task = TaskSerializer(many=True)
@@ -29,6 +32,7 @@ class TodoSerializer(serializers.ModelSerializer):
                 'date_created', 'slug',
             ]
 
+'''Todo Plan Serializers'''
 class TodoPlanListSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
     todo = TodoSerializer(many=True)
