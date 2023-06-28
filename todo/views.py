@@ -8,9 +8,12 @@ from rest_framework.response import Response
 
 
 from .serializers import (
-    TodoPlanListSerializer,
-    TodoSerializer,
+    TodoPlanListSerializer, TodoPlanCreateSerializer,
+    
+    TodoSerializer, TodoCreateSerializer,
+    
     TaskSerializer,
+    
     CategorySerializer,
     
 )
@@ -32,6 +35,16 @@ class TodoPlanView(APIView):
         serializer = TodoPlanListSerializer(todo_plan, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class TodoPlanCreateView(APIView):
+    permission_classes = (permissions.AllowAny, )
+    
+    def post(self, request):
+        serializer = TodoPlanCreateSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 '''Todo Views'''
 class TodoDetailView(APIView):
     permission_classes = (permissions.AllowAny, )
@@ -40,6 +53,17 @@ class TodoDetailView(APIView):
         todo = get_object_or_404(Todo, slug=slug)
         serializer = TodoSerializer(todo)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class TodoCreateView(APIView):
+    permission_classes = (permissions.AllowAny, )
+    
+    def post(self, request):
+        
+        serializer = TodoCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
 '''Task Views'''
 class TaskDetailView(APIView):

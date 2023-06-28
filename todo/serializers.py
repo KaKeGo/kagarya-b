@@ -32,6 +32,21 @@ class TodoSerializer(serializers.ModelSerializer):
                 'date_created', 'slug',
             ]
 
+class TodoCreateSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+            many=True, queryset=TodoCategory.objects.all(), slug_field='name'
+        )
+    
+    class Meta:
+        model = Todo
+        fields = ['name', 'description', 'category']
+        
+    def create(self, validated_data):
+        category_data = validated_data.pop('category')
+        todo = Todo.objects.create(**validated_data)
+        todo.category.set(category_data)
+        return todo
+
 '''Todo Plan Serializers'''
 class TodoPlanListSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
@@ -43,3 +58,13 @@ class TodoPlanListSerializer(serializers.ModelSerializer):
         
     def get_author(self, obj):
         return obj.author.username
+
+class TodoPlanCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TodoPlan
+        fields = ['name',]
+        
+    def create(self, vailidated_data):
+        user = self.context['request'].user
+        plan_todo = TodoPlan.objects.create(author=user, **vailidated_data)
+        return plan_todo
