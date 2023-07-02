@@ -46,7 +46,12 @@ INSTALLED_APPS = [
     
     #My App
     'home',
+<<<<<<< HEAD
     'users.apps.UsersConfig',
+=======
+    'users',
+    'todo',
+>>>>>>> origin/core
     
     #Third apps
     'rest_framework',
