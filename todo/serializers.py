@@ -20,6 +20,11 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['id', 'name', 'completed']
 
+class TaskCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['name',]
+
 '''Todo Serializers'''
 class TodoSerializer(serializers.ModelSerializer):
     category = CategorySerializer(many=True)
@@ -33,6 +38,35 @@ class TodoSerializer(serializers.ModelSerializer):
                 'date_created', 'slug',
             ]
 
+class TodoDetailSerializer(serializers.ModelSerializer):
+    task = TaskSerializer(many=True)
+    
+    class Meta:
+        model = Todo
+        fields = ['name', 'description', 'task', 'slug']
+        
+    def update(self, instance, validated_data):
+        tasks_data = validated_data.pop('tasks', [])
+        
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.save()
+        
+        for task_data in tasks_data:
+            task_id = task_data.get('id')
+            if task_id:
+                task = get_object_or_404(Task, id=task_id, todo=instance)
+                for key, value in task_data.items():
+                    setattr(task, key, value)
+                task.save()
+                
+        for task_data in tasks_data:
+            task_id = task_data.get('id')
+            if not task_id:
+                Task.objects.create(todo=instance, **task_data)
+        
+        return instance
+
 class TodoCreateSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(
             many=True, 
@@ -42,7 +76,7 @@ class TodoCreateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Todo
-        fields = ['name', 'description', 'category',]
+        fields = ['name', 'description', 'category', 'slug',]
         
     def create(self, validated_data):
         category_data = validated_data.pop('category')
