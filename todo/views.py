@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 
 from .serializers import (
-    TodoPlanListSerializer, TodoPlanCreateSerializer,
+    TodoPlanListSerializer, TodoPlanCreateSerializer, TodoPlanDetailSerializer,
     
     TodoSerializer, TodoCreateSerializer,
     
@@ -29,11 +29,28 @@ from .models import (
 class TodoPlanView(APIView):
     permission_classes = (permissions.AllowAny, )
     
-    def get(self, request, slug):
-        user = request.user
-        todo_plan = TodoPlan.objects.filter(author=user, slug=slug)
+    def get(self, request):
+        todo_plan = TodoPlan.objects.all()
         serializer = TodoPlanListSerializer(todo_plan, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class TodoPlanDetailView(APIView):
+    permission_classes = (permissions.AllowAny, )
+    
+    def get(self, request, slug):
+        todo_plan = get_object_or_404(TodoPlan, slug=slug)
+        serializer = TodoPlanDetailSerializer(todo_plan)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, slug):
+        todo_plan = get_object_or_404(TodoPlan, slug=slug)
+        serializer = TodoCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            todo = serializer.save()
+            todo_plan.todo.add(todo)
+            return Response(TodoSerializer(todo).data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 class TodoPlanCreateView(APIView):
     permission_classes = (permissions.AllowAny, )
@@ -57,8 +74,7 @@ class TodoDetailView(APIView):
 class TodoCreateView(APIView):
     permission_classes = (permissions.AllowAny, )
     
-    def post(self, request):
-        
+    def post(self, request):    
         serializer = TodoCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
