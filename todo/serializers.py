@@ -46,7 +46,7 @@ class TodoDetailSerializer(serializers.ModelSerializer):
         fields = ['name', 'description', 'task', 'slug']
         
     def update(self, instance, validated_data):
-        tasks_data = validated_data.pop('tasks', [])
+        tasks_data = validated_data.pop('task', [])
         
         instance.name = validated_data.get('name', instance.name)
         instance.description = validated_data.get('description', instance.description)
@@ -63,7 +63,10 @@ class TodoDetailSerializer(serializers.ModelSerializer):
         for task_data in tasks_data:
             task_id = task_data.get('id')
             if not task_id:
-                Task.objects.create(todo=instance, **task_data)
+                task = Task.objects.create(todo=instance, **task_data)
+                task.save()
+        
+        instance.task.set(Task.objects.filter(todo=instance))
         
         return instance
 
