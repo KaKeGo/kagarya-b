@@ -32,8 +32,6 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['kagarya-api-b653e4a8ab75.herokuapp.com']
 
-DEBUG_PROPAGATE_EXCEPTIONS = True
-
 # Application definition
 
 INSTALLED_APPS = [
