@@ -15,7 +15,6 @@ import django_heroku
 
 from pathlib import Path
 from decouple import config
-from google.cloud import storage
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,7 +46,7 @@ INSTALLED_APPS = [
     
     #My App
     'home',
-    'users',
+    'users.apps.UsersConfig',
     'todo',
     
     #Third apps
@@ -93,16 +92,13 @@ WSGI_APPLICATION = 'kagarya.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 if 'DATABASE_URL' in os.environ:
+    import dj_database_url
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME'),
-            'USER': os.environ.get('DB_USER'),
-            'PASSWORD': os.environ.get('DB_PASSWORD'),
-            'HOST': os.environ.get('DB_HOST'),
-            'PORT': os.environ.get('DB_PORT'),
-        } 
+            dj_database_url.config(conn_max_age=600, ssl_require=True)
+        }
     }
+    
 else:
     DATABASES = {
         'default': {
