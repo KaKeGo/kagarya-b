@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = config('SECRET_KEY')
-SECRET_KEY = 'SECRET_KEY=django-insecure-=w2cinrbyz=7@0g*rs&dz*ue5grx*dswasu%2+7mlsuikpab&z'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     
     #My App
     'home',
-    'users.apps.UsersConfig',
+    'users',
     'todo',
     
     #Third apps
