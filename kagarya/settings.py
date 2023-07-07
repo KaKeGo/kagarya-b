@@ -183,6 +183,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:3000',
     'http://localhost:3000',
     'http://www.kagarya.com',
+    'https://kagarrya-8c6ba2ed1509.herokuapp.com',
 ]
 
 
