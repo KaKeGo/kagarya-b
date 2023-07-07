@@ -67,9 +67,16 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+'''Serializer for Gender'''
+class GenderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gender
+        fields = ['id', 'name']
+
 '''Serializer for User Profile'''
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    gender = GenderSerializer()
     online_status = serializers.SerializerMethodField()
         
     class Meta:
@@ -88,9 +95,3 @@ class ProfileSerializer(serializers.ModelSerializer):
             user_sessions = active_sessions.filter(session_key=session_key)
             return user_sessions.exists() and obj.user == request.user
         return False
-
-'''Serializer for Gender'''
-class GenderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Gender
-        fields = ['id', 'name']
