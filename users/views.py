@@ -32,7 +32,7 @@ class GetCSRFToken(APIView):
 '''
 Profile Views
 '''
-@method_decorator(csrf_protect, name='dispatch')
+# @method_decorator(csrf_protect, name='dispatch')
 class ProfileListView(APIView):
     '''Users profile list'''
     permission_classes = (permissions.AllowAny, )
