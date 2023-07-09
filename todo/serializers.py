@@ -18,7 +18,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['id', 'name', 'completed']
+        fields = ['id', 'name', 'description', 'completed']
 
 class TaskCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -76,10 +76,11 @@ class TodoCreateSerializer(serializers.ModelSerializer):
             queryset=TodoCategory.objects.all(), 
             slug_field='name'
         )
+    task = TaskSerializer(many=True)
     
     class Meta:
         model = Todo
-        fields = ['name', 'description', 'category', 'slug',]
+        fields = ['name', 'description', 'task', 'category', 'slug',]
         
     def create(self, validated_data):
         category_data = validated_data.pop('category')
