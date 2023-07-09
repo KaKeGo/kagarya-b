@@ -59,7 +59,7 @@ class Todo(models.Model):
     
 class Task(models.Model):
     name = models.CharField(max_length=40)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     completed = models.BooleanField(default=False)
     
     class Meta:
