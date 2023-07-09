@@ -105,7 +105,7 @@ class TodoPlanDetailSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = TodoPlan
-        fields = ['name', 'author', 'todo', 'slug']
+        fields = ['name', 'get_username', 'todo', 'slug']
     
     def update(self, instance, validated_data):
         todos_data = validated_data.pop('todo', [])
