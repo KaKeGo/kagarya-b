@@ -80,7 +80,7 @@ class TodoCreateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Todo
-        fields = ['id', 'name', 'description', 'category', 'slug',]
+        fields = ['id', 'name', 'description', 'task', 'category', 'slug',]
         
     def create(self, validated_data):
         category_data = validated_data.pop('category')
