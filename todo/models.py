@@ -31,14 +31,14 @@ class TodoPlan(models.Model):
 class Todo(models.Model):
     name = models.CharField(max_length=40)
     description = models.TextField()
-    category = models.ManyToManyField('TodoCategory', blank=True, null=True)
-    task = models.ManyToManyField('Task', blank=True, null=True)
+    category = models.ManyToManyField('TodoCategory', blank=True)
+    task = models.ManyToManyField('Task', blank=True)
     completed = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
     
     class Meta:
-        ordering = ['-date_created']
+        ordering = ['date_created']
     
     def __str__(self):
         return self.name
@@ -55,15 +55,15 @@ class Todo(models.Model):
         if not self.slug:
             r_slug = self.random_slug(10)
             self.slug = slugify(self.name + '-' + r_slug)
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
     
 class Task(models.Model):
     name = models.CharField(max_length=40)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     completed = models.BooleanField(default=False)
     
     class Meta:
-        ordering = ['-id']
+        ordering = ['id']
     
     def __str__(self):
         return self.name
