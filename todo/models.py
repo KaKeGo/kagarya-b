@@ -38,7 +38,7 @@ class Todo(models.Model):
     slug = models.SlugField(unique=True, blank=True, null=True)
     
     class Meta:
-        ordering = ['-date_created']
+        ordering = ['date_created']
     
     def __str__(self):
         return self.name
