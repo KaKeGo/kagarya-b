@@ -30,6 +30,16 @@ class GetCSRFToken(APIView):
         return Response({'Success': 'CSRFToken cookie set'})
 
 '''
+Auth user
+'''
+class UserAuthCheckView(APIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    
+    def get(self, request):
+        user = request.user
+        return Response({'Success': f'{user.username} authenticated'})
+
+'''
 Profile Views
 '''
 # @method_decorator(csrf_protect, name='dispatch')
