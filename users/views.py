@@ -38,9 +38,15 @@ class UserAuthCheckView(APIView):
     def get(self, request):
         user = request.user
         if user.is_authenticated:
-            return Response({'Status': f' {user.username} authenticated'})
+            return Response({
+                'is_authenticated': True,
+                'user': {
+                    'username': user.username,
+                    'email': user.email,
+                }
+            })
         else:
-            return Response({'Status': 'anonymous'})
+            return Response({'is_authenticated': False})
 
 '''
 Profile Views
@@ -80,7 +86,8 @@ class UserRegisterView(APIView):
             return Response({'success': 'User created successfully'}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer._errors, status=status.HTTP_400_BAD_REQUEST)
-
+        
+@method_decorator(csrf_protect, name='dispatch')
 class UserLoginView(APIView):
     '''Login User'''
     permission_classes = (permissions.AllowAny, )
@@ -100,7 +107,7 @@ class UserLoginView(APIView):
 # @method_decorator(csrf_protect, name='dispatch')
 class UserLogoutView(APIView):
     '''Logout User'''
-    # permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, )
     
     def post(self, request, *args, **kwargs):
         logout(request)
