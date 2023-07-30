@@ -185,6 +185,7 @@ if DEBUG is False:
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 3600
 
+CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 # SESSION_COOKIE_HTTPONLY = True
 
