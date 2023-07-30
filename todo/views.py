@@ -27,10 +27,11 @@ from .models import (
 '''Plan Todo Views'''
 @method_decorator(csrf_protect, name='dispatch')
 class TodoPlanView(APIView):
-    permission_classes = (permissions.AllowAny, )
+    permission_classes = (permissions.IsAuthenticated, )
     
     def get(self, request):
-        todo_plan = TodoPlan.objects.all()
+        user = request.user
+        todo_plan = TodoPlan.objects.filter(author=user)
         serializer = TodoPlanListSerializer(todo_plan, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
