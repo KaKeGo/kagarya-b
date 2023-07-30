@@ -51,7 +51,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+<<<<<<< HEAD
     'storages',
+=======
+    'channels',
+>>>>>>> core
 ]
 
 MIDDLEWARE = [
@@ -85,6 +89,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kagarya.wsgi.application'
 
+ASGI_APPLICATION = 'myproject.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -180,7 +185,13 @@ if DEBUG is False:
         ],
     }
 
-CORS_ALLOW_CREDENTIALS = True
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 3600
+
+SESSION_COOKIE_SECURE = True
+# SESSION_COOKIE_HTTPONLY = True
+
+# CSRF_COOKIE_NAME = 'my_csrftoken'
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
@@ -189,6 +200,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
     'http://www.kagarya.com',
 ]
+CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
@@ -196,6 +208,13 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
     'http://www.kagarya.com',
     'https://kagarrya-8c6ba2ed1509.herokuapp.com',
+]
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+    'http://www.kagarya.com',
 ]
 
 django_heroku.settings(locals())
