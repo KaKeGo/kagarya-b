@@ -192,27 +192,14 @@ SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_NAME = 'my_csrftoken'
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://www.kagarya.com',
+    'https://www.kagarya.com',
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-    'http://127.0.0.1:3000',
-    'http://localhost:3000',
-    'http://www.kagarya.com',
-    'https://kagarrya-8c6ba2ed1509.herokuapp.com',
+    'https://www.kagarya.com',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-    'http://127.0.0.1:3000',
-    'http://localhost:3000',
-    'http://www.kagarya.com',
+    'https://www.kagarya.com',
 ]
 
 django_heroku.settings(locals())
