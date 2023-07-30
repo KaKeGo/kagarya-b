@@ -1,6 +1,7 @@
-from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie, csrf_exempt
 from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login, logout
+from django.middleware.csrf import get_token
 
 from rest_framework import permissions, status
 from rest_framework.views import APIView
@@ -27,7 +28,19 @@ class GetCSRFToken(APIView):
     permission_classes = (permissions.AllowAny, )
     
     def get(self, request):
-        return Response({'Success': 'CSRFToken cookie set'})
+        csrf_token = get_token(request)
+        return Response({'CSRFToken': csrf_token})
+
+'''
+Auth user
+'''
+class UserAuthCheckView(APIView):
+    def get(self, request):
+        user = request.user
+        if user.is_authenticated:
+            return Response({'Status': f' {user.username} authenticated'})
+        else:
+            return Response({'Status': 'anonymous'})
 
 '''
 Profile Views
@@ -55,6 +68,7 @@ class UserProfileDetailView(APIView):
         serializer = ProfileSerializer(profile, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+@method_decorator(csrf_protect, name='dispatch')
 class UserRegisterView(APIView):
     '''Register User'''
     permission_classes = (permissions.AllowAny, )
@@ -83,10 +97,10 @@ class UserLoginView(APIView):
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
-@method_decorator(csrf_protect, name='dispatch')
+# @method_decorator(csrf_protect, name='dispatch')
 class UserLogoutView(APIView):
     '''Logout User'''
-    permission_classes = (permissions.IsAuthenticated, )
+    # permission_classes = (permissions.IsAuthenticated, )
     
     def post(self, request, *args, **kwargs):
         logout(request)
