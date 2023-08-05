@@ -38,11 +38,17 @@ class UserAuthCheckView(APIView):
     def get(self, request):
         user = request.user
         if user.is_authenticated:
+            try: 
+                profile = user.profile
+                user_slug = profile.slug
+            except Profile.DoesNotExist:
+                return Response({'Message': 'Slug not exists.'})
             return Response({
                 'is_authenticated': True,
                 'user': {
                     'username': user.username,
                     'email': user.email,
+                    'slug': user_slug,
                 }
             })
         else:

@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'storages',
     'channels',
+    'django_countries',
 ]
 
 MIDDLEWARE = [
@@ -193,6 +194,7 @@ CSRF_COOKIE_SECURE = True
 # CSRF_COOKIE_NAME = 'my_csrftoken'
 
 CORS_ALLOWED_ORIGINS = [
+<<<<<<< HEAD
     'https://www.kagarya.com',
 ]
 CORS_ALLOW_CREDENTIALS = True
@@ -201,6 +203,25 @@ CORS_ORIGIN_WHITELIST = [
 ]
 CSRF_TRUSTED_ORIGINS = [
     'https://www.kagarya.com',
+=======
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+]
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+>>>>>>> core
 ]
 
 django_heroku.settings(locals())
