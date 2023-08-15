@@ -3,6 +3,7 @@ from django.urls import path
 from . views import (
     GetCSRFToken,
     UserAuthCheckView,
+    ActivateAccountView,
     
     UserProfileDetailView,
     UserRegisterView,
@@ -23,6 +24,7 @@ urlpatterns = [
     
     path('profile/list/', ProfileListView.as_view(), name='profile_list'),
     path('profile/create/', UserRegisterView.as_view(), name='profile_create'),
+    path('activate/<str:uidb64>/<str:token>/', ActivateAccountView.as_view(), name='activate_account'),
     path('profile/login/', UserLoginView.as_view(), name='profile_login'),
     path('profile/logout/', UserLogoutView.as_view(), name='profile_logout'),
     

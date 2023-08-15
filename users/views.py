@@ -2,6 +2,12 @@ from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie, csrf_
 from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.core.mail import send_mail
+from django.utils.encoding import force_bytes
 
 from rest_framework import permissions, status
 from rest_framework.views import APIView
@@ -88,11 +94,48 @@ class UserRegisterView(APIView):
     def post(self, request):
         serializer = UserCreateSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
+            
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            
+            activation_link = f'http://localhost:8000/accounts/activate/{uid}/{token}/'
+            
+            subject = 'Account activation'
+            message = render_to_string(
+                'users/activation_email.html', 
+                {'activation_link': activation_link}
+                )
+            send_mail(
+                subject, 
+                strip_tags(message), 
+                'adress@example.com', 
+                [user.email],
+                html_message=message
+                )
+            
             return Response({'success': 'User created successfully'}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer._errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
+class ActivateAccountView(APIView):
+    '''Activate User Account'''
+    permission_classes = (permissions.AllowAny, )
+    
+    def get(self, request, uidb64, token):
+        try:
+            uid = str(urlsafe_base64_decode(uidb64), 'utf-8')
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+            
+        if user is not None and default_token_generator.check_token(user, token):
+            user.is_active = True
+            user.save()
+            return Response({'success': 'Account activated successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid activation link'}, status=status.HTTP_400_BAD_REQUEST)
+
 @method_decorator(csrf_protect, name='dispatch')
 class UserLoginView(APIView):
     '''Login User'''

@@ -56,7 +56,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['username']
     
     def __str__(self):
-        return f'{self.username} | {self.email}'
+        if self.is_active:
+            return self.username
+        else:
+            return 'User Deleted'
     
     class Meta:
         verbose_name = 'User'
