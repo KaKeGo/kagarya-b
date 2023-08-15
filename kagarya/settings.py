@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'users',
     'todo',
     'animelist',
+    'mangalist',
     
     #Third apps
     'rest_framework',
