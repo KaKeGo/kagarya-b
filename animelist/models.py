@@ -17,6 +17,7 @@ class AnimeList(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=200)
     body = models.TextField()
+    cover = models.ImageField(upload_to='anime/cover/', null=True, blank=True)
     anime_type = models.ManyToManyField('Type')
     episodes = models.IntegerField(default=0)
     category = models.ManyToManyField('Category')
@@ -29,7 +30,10 @@ class AnimeList(models.Model):
     @property
     def average_raiting(self):
         total_ratings = Rating.objects.filter(anime=self).aggregate(models.Avg('value'))
-        return total_ratings['value__avg']
+        avg_rating = total_ratings['value__avg']
+        if avg_rating is not None:
+            return round(avg_rating, 2)
+        return 'Not set'
 
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
