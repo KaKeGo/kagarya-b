@@ -8,6 +8,9 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import send_mail
 from django.utils.encoding import force_bytes
+from django.utils import timezone
+
+from urllib.parse import urlencode
 
 from rest_framework import permissions, status
 from rest_framework.views import APIView
@@ -96,10 +99,13 @@ class UserRegisterView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             
-            token = default_token_generator.make_token(user)
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            expires=timezone.now() + timezone.timedelta(hours=24)
             
-            activation_link = f'http://localhost:8000/accounts/activate/{uid}/{token}/'
+            token = default_token_generator.make_token(user)
+            uid64 = urlsafe_base64_encode(force_bytes(user.pk))
+            
+            query_params = urlencode({'expires': int(expires.timestamp())})
+            activation_link = f'http://localhost:8000/accounts/activate/{uid64}/{token}/?{query_params}'
             
             subject = 'Account activation'
             message = render_to_string(
@@ -130,6 +136,25 @@ class ActivateAccountView(APIView):
             user = None
             
         if user is not None and default_token_generator.check_token(user, token):
+            expires_timestamp = request.query_params.get('expires')
+            
+            if not expires_timestamp:
+                return Response({'error': 'Missing or invalid expires parameter'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            expires_timestamp = expires_timestamp.rstrip('/')
+            try:
+                expires = timezone.make_aware(timezone.datetime.fromtimestamp(float(expires_timestamp)))
+            except ValueError:
+                return Response({'error': 'Invalid expires parameter format'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            expires_plus_10s = expires + timezone.timedelta(hours=24)
+            
+            if timezone.now() > expires_plus_10s:
+                raise Response({'error': 'Activation link has expired'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if user.is_active:
+                return Response({'error': 'Account is already activated'}, status=status.HTTP_400_BAD_REQUEST)
+                
             user.is_active = True
             user.save()
             return Response({'success': 'Account activated successfully'}, status=status.HTTP_200_OK)
