@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth import get_user_model
 
+from urllib.parse import quote
+
 User = get_user_model()
 
 
@@ -17,6 +19,7 @@ class AnimeList(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=200)
     body = models.TextField()
+    video = models.URLField(blank=True, null=True)
     cover = models.ImageField(upload_to='anime/cover/', null=True, blank=True)
     anime_type = models.ManyToManyField('Type')
     episodes = models.IntegerField(default=0)
@@ -26,6 +29,13 @@ class AnimeList(models.Model):
     
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        if not self.id:
+            super().save(*args, **kwargs)
+        if not self.slug:
+            self.slug = quote(f'{self.id}/{self.title}')
+        super().save(*args, **kwargs)
     
     @property
     def average_raiting(self):
