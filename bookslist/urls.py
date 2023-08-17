@@ -4,7 +4,7 @@ from .views import (
     BooksListView,
 )
 
-app_name = 'animelist'
+app_name = 'bookslist'
 
 
 urlpatterns = [

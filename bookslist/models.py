@@ -49,7 +49,7 @@ class BooksList(models.Model):
     
     @property
     def average_raiting(self):
-        total_ratings = Rating.objects.filter(anime=self).aggregate(models.Avg('value'))
+        total_ratings = Rating.objects.filter(books=self).aggregate(models.Avg('value'))
         avg_rating = total_ratings['value__avg']
         if avg_rating is not None:
             return round(avg_rating, 2)

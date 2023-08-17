@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'mangalist',
     'filmslist',
     'bookslist',
-    'gamelist',
+    'gameslist',
     
     #Third apps
     'rest_framework',

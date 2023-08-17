@@ -15,7 +15,7 @@ urlpatterns = [
     path('manga/', include('mangalist.urls')),
     path('films/', include('filmslist.urls')),
     path('books/', include('bookslist.urls')),
-    path('games/', include('gamelist.urls')),
+    path('games/', include('gameslist.urls')),
 ]
 
 if settings.DEBUG:
