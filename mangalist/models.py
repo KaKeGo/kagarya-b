@@ -13,6 +13,18 @@ STATUS_CHOICES = (
     ('pending', 'pending'),
     ('public', 'public'),
 )
+RAITING_CHOICE = (
+    (1, '1'),
+    (2, '2'),
+    (3, '3'),
+    (4, '4'),
+    (5, '5'),
+    (6, '6'),
+    (7, '7'),
+    (8, '8'),
+    (9, '9'),
+    (10, '10'),
+)
 
 class MangaList(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -38,21 +50,19 @@ class MangaList(models.Model):
     
     @property
     def average_raiting(self):
-        total_raitings = Raiting.objects.filter(manga=self).aaggregate(models.Avg('value'))
+        total_raitings = Raiting.objects.filter(manga=self).aggregate(models.Avg('value'))
         avg_rating = total_raitings['value__avg']
         if avg_rating is not None:
             return round(avg_rating, 2)
-        return 'Not set'
+        return 0
     
 class Raiting(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='manga_ratings')
     manga = models.ForeignKey(MangaList, related_name='ratings', on_delete=models.SET_NULL, null=True)
-    value = models.PositiveIntegerField(
-            validators=[MinValueValidator(1), MaxValueValidator(10)]
-        )
+    value = models.PositiveIntegerField(choices=RAITING_CHOICE)
     
     def __str__(self):
-        return f'{self.name} - {self.value}'
+        return f'{self.user.username} - {self.value}'
     
     class Meta:
         unique_together = ['manga', 'user'] 

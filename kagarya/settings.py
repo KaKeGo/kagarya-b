@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'todo',
     'animelist',
     'mangalist',
+    'filmslist',
     
     #Third apps
     'rest_framework',

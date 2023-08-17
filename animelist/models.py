@@ -13,6 +13,18 @@ STATUS_CHOICES = (
     ('pending', 'pending'),
     ('public', 'public'),
 )
+RAITING_CHOICE = (
+    (1, '1'),
+    (2, '2'),
+    (3, '3'),
+    (4, '4'),
+    (5, '5'),
+    (6, '6'),
+    (7, '7'),
+    (8, '8'),
+    (9, '9'),
+    (10, '10'),
+)
 
 
 class AnimeList(models.Model):
@@ -46,11 +58,9 @@ class AnimeList(models.Model):
         return 'Not set'
 
 class Rating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='anime_ratings')
     anime = models.ForeignKey(AnimeList, related_name='ratings', on_delete=models.CASCADE)
-    value = models.PositiveIntegerField(
-            validators=[MinValueValidator(1), MaxValueValidator(10)]
-        )
+    value = models.PositiveIntegerField(choices=RAITING_CHOICE)
     
     def __str__(self):
         return f'{self.user.username} - {self.value}'

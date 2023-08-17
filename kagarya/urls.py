@@ -13,6 +13,7 @@ urlpatterns = [
     #Lists
     path('anime/', include('animelist.urls')),
     path('manga/', include('mangalist.urls')),
+    path('films/', include('filmslist.urls')),
 ]
 
 if settings.DEBUG:
