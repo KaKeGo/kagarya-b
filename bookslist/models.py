@@ -53,10 +53,10 @@ class BooksList(models.Model):
         avg_rating = total_ratings['value__avg']
         if avg_rating is not None:
             return round(avg_rating, 2)
-        return 'Not set'
+        return 0
 
 class Rating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='anime_ratings')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='books_ratings')
     books = models.ForeignKey(BooksList, related_name='ratings', on_delete=models.CASCADE)
     value = models.PositiveIntegerField(choices=RAITING_CHOICE)
     
