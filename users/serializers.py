@@ -3,8 +3,9 @@ from rest_framework import serializers
 from django.contrib.sessions.models import Session
 from django.utils import timezone
 
-from .models import (
-    User, Profile, Gender
+from .models import User
+from .profile_model import (
+    Profile, Gender
 )
 
 
@@ -83,7 +84,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = [
             'id', 'get_username', 'user', 'avatar', 'about', 
-            'motto', 'gender', 'slug', 'online_status'
+            'motto', 'gender', 'slug', 'online_status', 'game_list'
             ]
         read_only_fields = ['slug']
         

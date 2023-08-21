@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import (
-    User, Profile, Gender
+from .profile_model import (
+    Profile, Gender
 )
+from .models import User
 from .forms import (
     UserCreateForm,
     UserUpdateForm,

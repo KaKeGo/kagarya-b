@@ -1,13 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
-from django_countries.fields import CountryField
 
-# Create your models here.
 
-'''
-CustomUser model and UserManager
-'''
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -18,8 +13,8 @@ class UserManager(BaseUserManager):
         
         email = self.normalize_email(email)
         user = self.model(
-                username=username, 
-                email=email, 
+                username=username,
+                email=email,
                 **extra_fields
             )
         user.set_password(password)
@@ -67,32 +62,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         
     def user_count(self):
         return User.objects.count_created_users()
-
-'''
-Profile for users
-'''
-
-def get_default_avatar():
-    '''Default avatar for users'''
-    return 'default/avatar/avatar.jpg'
-
-class Gender(models.Model):
-    name = models.CharField(max_length=10, unique=True)
     
-    def __str__(self):
-        return self.name
-
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='avatars/', default=get_default_avatar)
-    about = models.TextField(blank=True, null=True)
-    motto = models.CharField(max_length=80, blank=True, null=True)
-    gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
-    country = CountryField(blank=True, null=True)
-    slug = models.SlugField(unique=True, blank=True)
-
-    def __str__(self):
-        return f'Profile for {self.user.username}'
-
-    def get_username(self):
-        return self.user.username

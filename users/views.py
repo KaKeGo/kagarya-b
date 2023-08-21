@@ -17,8 +17,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from .models import (
-    User, Profile, Gender
+from .models import User
+from .profile_model import (
+    Profile, Gender
 )
 
 from .serializers import (

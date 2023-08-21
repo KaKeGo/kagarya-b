@@ -24,6 +24,25 @@ RAITING_CHOICE = (
     (9, '9'),
     (10, '10'),
 )
+PROGRESS_CHOICE = (
+    ('plaing', 'plaing'),
+    ('comleted', 'comleted'),
+    ('on hold', 'on hold'),
+    ('dropped', 'dropped'),
+    ('plan to play', 'plan to play'),
+)
+
+class UserGameEntry(models.Model):
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    games = models.ForeignKey('GameList', on_delete=models.DO_NOTHING)
+    status = models.CharField(max_length=100, choices=PROGRESS_CHOICE, default='plan to play')
+    
+    def __str__(self):
+        return f'{self.user.username} / game / {self.games.title}'
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.user.profile.game_list.add(self)
 
 class GameList(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -55,7 +74,7 @@ class GameList(models.Model):
         return 0
 
 class Rating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='game_ratings')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     game = models.ForeignKey(GameList, related_name='ratings', on_delete=models.CASCADE)
     value = models.PositiveIntegerField(choices=RAITING_CHOICE)
     

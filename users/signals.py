@@ -3,7 +3,9 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 
-from .models import Profile, Gender
+from .profile_model import (
+    Profile, Gender
+)
 
 
 User = get_user_model()

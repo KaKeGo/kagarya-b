@@ -12,9 +12,10 @@ from .models import (
 )
 from .serializers import (
     GamesListSerializer,
+    UserGameEntrySerializer,
 )
 
-
+'''Game List'''
 class GamesListView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
@@ -22,3 +23,12 @@ class GamesListView(APIView):
         game_list = GameList.objects.all()
         serializer = GamesListSerializer(game_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+'''Game List Entry'''
+class AddGameToProfileView(APIView):
+    def post(self, request):
+        serializer = UserGameEntrySerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
