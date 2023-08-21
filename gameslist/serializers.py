@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator, FileExtensionValidator
 from django.contrib.auth import get_user_model
 
 from PIL import Image
@@ -38,7 +38,9 @@ class GamesListSerializer(serializers.ModelSerializer):
             ]
 
 class GameListCreateSerializer(serializers.ModelSerializer):
-    cover = serializers.ImageField()
+    cover = serializers.ImageField(validators=[
+            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png']),
+        ])
     video = serializers.URLField(validators=[URLValidator()])
     
     class Meta:
@@ -53,6 +55,36 @@ class GameListCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Title should be at least 2 characters')
         elif len(value) >200:
             raise serializers.ValidationError('Title should be no more than 200 characters')
+        
+        return value
+    
+    def validate_body(self, value):
+        if len(value) < 30:
+            raise serializers.ValidationError('Body should be at least 30 characters')
+        elif len(value) > 1000:
+            raise serializers.ValidationError('Body should be no more than 1000 characters')
+        
+        return value
+    
+    def validate_cover(self, value):
+        image = Image.open(value)
+        width, height = image.size
+        if width > 800 or height > 800:
+            raise serializers.ValidationError('Image dimensions should be no more than 800x800 pixels')
+        
+        max_image_size = 20 * 1024 * 1024
+        if value.size > max_image_size:
+            raise serializers.ValidationError('Image file size should be no more than 20mb')
+        
+        return value
+    
+    def validate_video(self, value):
+        url_validator = URLValidator()
+        try:
+            url_validator(value)
+        except ValidationError:
+            raise serializers.ValidationError('Invalid video URL')
+        
         return value
 
 '''User Game List'''
