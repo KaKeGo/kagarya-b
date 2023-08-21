@@ -25,7 +25,7 @@ RAITING_CHOICE = (
     (10, '10'),
 )
 PROGRESS_CHOICE = (
-    ('plaing', 'plaing'),
+    ('playing', 'playing'),
     ('comleted', 'comleted'),
     ('on hold', 'on hold'),
     ('dropped', 'dropped'),
