@@ -33,9 +33,9 @@ class GamesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = GameList
         fields = [
-                'id', 'cover', 'title', 'body', 'game_type',
-                'category', 'average_raiting' 
-            ]
+            'id', 'cover', 'title', 'body', 'game_type',
+            'category', 'average_rating'
+        ]
 
 class GameListCreateSerializer(serializers.ModelSerializer):
     cover = serializers.ImageField(validators=[
@@ -88,10 +88,10 @@ class GameListCreateSerializer(serializers.ModelSerializer):
         return value
 
 '''User Game List'''
-class UserGameEntrySerializer(serializers.ModelSerializer):
+class UserGameEntrySerializer(serializers.ModelSerializer): 
     class Meta:
         model = UserGameEntry
-        fields = ['games', 'status']
+        fields = ['games', 'status', 'rating', 'note']
         
     def validate(self, data):
         user = self.context['request'].user 
@@ -109,7 +109,16 @@ class UserGameEntrySerializer(serializers.ModelSerializer):
         user = self.context['request'].user 
         games = validated_data['games']
         status = validated_data['status']
+        note = validated_data['note']
+        rating = validated_data.get('rating')
         
-        entry = UserGameEntry(user=user, games=games, status=status)
-        entry.save()
+        entry = UserGameEntry(
+            user=user, 
+            games=games, 
+            status=status,
+            note=note,
+            rating=rating,
+            )
+        entry.save() 
+        
         return entry

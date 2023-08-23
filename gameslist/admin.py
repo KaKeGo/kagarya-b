@@ -3,7 +3,6 @@ from django.contrib import admin
 from .models import (
     GameList, Type, Category, UserGameEntry
 )
-
 # Register your models here.
 
 

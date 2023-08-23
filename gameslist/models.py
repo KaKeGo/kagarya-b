@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from django.db.models import Avg
 
 from urllib.parse import quote
 
@@ -26,7 +28,7 @@ RAITING_CHOICE = (
 )
 PROGRESS_CHOICE = (
     ('playing', 'playing'),
-    ('comleted', 'comleted'),
+    ('completed', 'completed'),
     ('on hold', 'on hold'),
     ('dropped', 'dropped'),
     ('plan to play', 'plan to play'),
@@ -36,11 +38,23 @@ class UserGameEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     games = models.ForeignKey('GameList', on_delete=models.DO_NOTHING)
     status = models.CharField(max_length=100, choices=PROGRESS_CHOICE, default='plan to play')
+    rating = models.PositiveIntegerField(choices=RAITING_CHOICE)
+    note = models.TextField(max_length=200, blank=True, null=True)
+    added_date = models.DateField(default=timezone.now, blank=True, null=True)
+    finish_date = models.DateField(blank=True, null=True)
     
     def __str__(self):
         return f'{self.user.username} / game / {self.games.title}'
     
+    def set_rating(self, value):
+        if self.rating:
+            self.rating.value = value
+            self.rating.save()
+    
     def save(self, *args, **kwargs):
+        if self.status == 'completed' and not self.finish_date:
+            self.finish_date = timezone.now().date()
+        
         super().save(*args, **kwargs)
         self.user.profile.game_list.add(self)
 
@@ -66,24 +80,11 @@ class GameList(models.Model):
         super().save(*args, **kwargs)
     
     @property
-    def average_raiting(self):
-        total_ratings = Rating.objects.filter(game=self).aggregate(models.Avg('value'))
-        avg_rating = total_ratings['value__avg']
+    def average_rating(self):
+        avg_rating = UserGameEntry.objects.filter(games=self).aggregate(Avg('rating'))['rating__avg']
         if avg_rating is not None:
             return round(avg_rating, 2)
         return 0
-
-class Rating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    game = models.ForeignKey(GameList, related_name='ratings', on_delete=models.CASCADE)
-    value = models.PositiveIntegerField(choices=RAITING_CHOICE)
-    
-    def __str__(self):
-        return f'{self.user.username} - {self.value}'
-    
-    class Meta:
-        unique_together = ['game', 'user']
-    
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
