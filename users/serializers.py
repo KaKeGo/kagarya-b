@@ -89,8 +89,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'get_username', 'user', 'avatar', 'about', 
             'motto', 'gender', 'slug', 'online_status', 'game_list',
-            'total_games_added', 'completed_games_count', 'playing_games_count',
-            'on_hold_games_count', 'dropped_games_count', 'plan_to_play_games_count',
+            'total_games_added', 'games_by_status_count',
             ]
         read_only_fields = ['slug']
         

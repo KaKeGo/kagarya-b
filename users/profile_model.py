@@ -48,21 +48,23 @@ class Profile(models.Model):
         return self.game_list.count()
     
     @property
-    def completed_games_count(self):
-        return self.game_list.filter(status='completed').count()
+    def games_by_status_count(self):
+        status_mapping = {
+            'completed': 'completed_games',
+            'playing': 'playing_games',
+            'on hold': 'on_hold_games',
+            'dropped': 'dropped_games',
+            'plan to play': 'plan_to_play_games',
+        }
+        
+        games_count_by_status = {}
+        for status_code, status_display in status_mapping.items():
+            filter_kwargs = {'status': status_code}
+            count = self.game_list.filter(**filter_kwargs).count()
+            games_count_by_status[status_display] = count
+        
+        return games_count_by_status
     
     @property
-    def playing_games_count(self):
-        return self.game_list.filter(status='playing').count()
-    
-    @property
-    def on_hold_games_count(self):
-        return self.game_list.filter(status='on hold').count()
-    
-    @property
-    def dropped_games_count(self):
-        return self.game_list.filter(status='dropped').count()
-    
-    @property
-    def plan_to_play_games_count(self):
-        return self.game_list.filter(status='plan to play').count()
+    def recently_added_games(self):
+        return self.game_list.order_by('-added_date')[:5]
