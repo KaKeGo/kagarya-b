@@ -5,7 +5,10 @@ from django.utils import timezone
 
 from .models import User
 from .profile_model import (
-    Profile, Gender
+    Profile, Gender,
+)
+from gameslist.serializers import (
+    UserGameEntrySerializer,
 )
 
 
@@ -79,12 +82,15 @@ class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     gender = GenderSerializer()
     online_status = serializers.SerializerMethodField()
+    game_list = UserGameEntrySerializer(many=True, read_only=True)
         
     class Meta:
         model = Profile
         fields = [
             'id', 'get_username', 'user', 'avatar', 'about', 
-            'motto', 'gender', 'slug', 'online_status', 'game_list'
+            'motto', 'gender', 'slug', 'online_status', 'game_list',
+            'total_games_added', 'completed_games_count', 'playing_games_count',
+            'on_hold_games_count', 'dropped_games_count', 'plan_to_play_games_count',
             ]
         read_only_fields = ['slug']
         

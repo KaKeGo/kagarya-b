@@ -88,7 +88,9 @@ class GameListCreateSerializer(serializers.ModelSerializer):
         return value
 
 '''User Game List'''
-class UserGameEntrySerializer(serializers.ModelSerializer): 
+class UserGameEntrySerializer(serializers.ModelSerializer):
+    games = GamesListSerializer(read_only=True)
+    
     class Meta:
         model = UserGameEntry
         fields = ['games', 'status', 'rating', 'note']

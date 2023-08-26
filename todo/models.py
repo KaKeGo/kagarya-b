@@ -11,7 +11,7 @@ User = get_user_model()
 
 
 class TodoPlan(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.PROTECT)
     name = models.CharField(max_length=30)
     todo = models.ManyToManyField('Todo', blank=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
