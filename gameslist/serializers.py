@@ -7,12 +7,48 @@ from PIL import Image
 
 
 from .models import (
-    GameList, Type, Category, UserGameEntry
+    GameList, Type, Category, UserGameEntry, GameDeveloper, Founder,
+    Comment, CommentRaiting, Platform,
 )
 
 User = get_user_model()
 
 
+'''Platform'''
+class PlatformSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Platform
+        fields = '__all__'
+
+'''Comments'''
+class CommentRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentRaiting
+        fields = '__all__'
+
+class CommentSerializer(serializers.ModelSerializer):
+    ratings = serializers.StringRelatedField(many=True, read_only=True)
+    game = serializers.StringRelatedField()
+    user = serializers.StringRelatedField()
+    
+    class Meta:
+        model = Comment
+        fields = ['user', 'game', 'text', 'ratings', 'formatted_created_at']
+
+'''Founders'''
+class Founder(serializers.ModelSerializer):
+    class Meta:
+        model = Founder
+        fields = '__all__'
+
+'''GameDeveloper'''
+class GameDeveloperSerializer(serializers.ModelSerializer):
+    founders = serializers.StringRelatedField(many=True)
+    
+    class Meta:
+        model = GameDeveloper
+        fields = '__all__'
+        
 '''Anime Category'''
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -27,14 +63,19 @@ class TypeSerializer(serializers.ModelSerializer):
         
 '''Game Serializer'''
 class GamesListSerializer(serializers.ModelSerializer):
-    game_type = TypeSerializer(many=True)
-    category = CategorySerializer(many=True)
+    game_type = serializers.StringRelatedField(many=True)
+    category = serializers.StringRelatedField(many=True)
+    developer = serializers.StringRelatedField()
+    platforms = serializers.StringRelatedField(many=True)
+    comments = CommentSerializer(many=True)
+    tags = serializers.StringRelatedField(many=True)
     
     class Meta:
         model = GameList
         fields = [
-            'id', 'cover', 'title', 'body', 'game_type',
-            'category', 'average_rating'
+            'id', 'cover', 'video', 'title', 'body', 'game_type',
+            'category', 'average_rating', 'developer', 'platforms',
+            'comments', 'tags', 'release_date',
         ]
 
 class GameListCreateSerializer(serializers.ModelSerializer):

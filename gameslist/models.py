@@ -159,6 +159,10 @@ class Comment(models.Model):
     def __str__(self):
         return f'Comment by {self.user.username} on {self.game.title}'
     
+    @property
+    def formatted_created_at(self):
+        return self.created_at.strftime('%d-%m-%Y %H:%M')
+    
 class CommentRaiting(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     comment = models.ForeignKey(Comment, on_delete=models.PROTECT)
