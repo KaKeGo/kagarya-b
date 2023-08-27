@@ -1,3 +1,5 @@
+import random, string
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -39,6 +41,11 @@ COMMENTS_RAITING = (
     ('surprise', 'surprise'),
     ('laugh', 'laugh'),
 )
+
+def generate_random_slug(length=6):
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for _ in range(length))
+
 
 '''UserGameEntry'''
 class UserGameEntry(models.Model):
@@ -184,6 +191,32 @@ class Tag(models.Model):
 '''Platforms'''
 class Platform(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    logo = models.ImageField(upload_to='platform_photos/', default=get_default_founder_avatar)
+    description = models.TextField(max_length=500, blank=True, null=True)
+    date_established = models.DateField(blank=True, null=True)
+    creator = models.ManyToManyField('PlatformCreator', blank=True)
+    slug = models.SlugField(unique=True, blank=True)
     
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            random_slug = generate_random_slug()
+            self.slug = slugify(f'{self.name}-{random_slug}')
+        super().save(*args, **kwargs)
+
+class PlatformCreator(models.Model):
+    first_name = models.CharField(max_length=40)
+    last_name = models.CharField(max_length=40)
+    bio = models.TextField(max_length=500, blank=True, null=True)
+    photo = models.ImageField(upload_to='founder_photos/', default=get_default_founder_avatar)
+    slug = models.SlugField(unique=True, blank=True)
+    
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f'{self.first_name}-{self.last_name}')
+        super().save(*args, **kwargs)

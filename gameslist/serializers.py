@@ -8,17 +8,50 @@ from PIL import Image
 
 from .models import (
     GameList, Type, Category, UserGameEntry, GameDeveloper, Founder,
-    Comment, CommentRaiting, Platform,
+    Comment, CommentRaiting, Platform, PlatformCreator,
 )
 
 User = get_user_model()
 
 
 '''Platform'''
+class PlatformCreatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlatformCreator
+        fields = '__all__'
+        
+    def validate_photo(self, value):
+        image = Image.open(value)
+        width, height = image.size
+        max_image_size = 20 * 1024 * 1024
+        
+        if width > 800 or height > 800:
+            raise serializers.ValidationError('Image should be no more than 800x800 pixels')
+        
+        if value.size > max_image_size:
+            raise serializers.ValidationError('Image file size should be no more than 20mb')
+
+        return value
+
 class PlatformSerializer(serializers.ModelSerializer):
+    creator = PlatformCreatorSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Platform
         fields = '__all__'
+        
+    def validate_logo(self, value):
+        image = Image.open(value)
+        width, height = image.size
+        max_image_size = 20 * 1024 * 1024
+        
+        if width > 800 or height > 800:
+            raise serializers.ValidationError('Image should be no more than 800x800 pixels')
+        
+        if value.size > max_image_size:
+            raise serializers.ValidationError('Image file size should be no more than 20mb')
+
+        return value
 
 '''Comments'''
 class CommentRatingSerializer(serializers.ModelSerializer):
@@ -88,7 +121,7 @@ class GameListCreateSerializer(serializers.ModelSerializer):
         model = GameList
         fields = [
             'title', 'body', 'video', 'cover', 'game_type', 'category',
-            'status'
+            'status', 'developer', 'platforms', 'tags', 'release_date',
         ]
         
     def validate_title(self, value):
