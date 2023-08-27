@@ -9,7 +9,8 @@ from .models import (
     GameList, Type, Category, PlatformCreator, Platform,
 )
 from .serializers import (
-    GamesListSerializer, UserGameEntrySerializer, PlatformCreatorSerializer, PlatformSerializer,
+    GamesListSerializer, UserGameEntrySerializer, PlatformCreatorSerializer, PlatformListSerializer,
+    PlatformCreateSerializer,
     
 )
 
@@ -56,7 +57,7 @@ class PlatformListView(APIView):
     
     def get(self, request):
         platforms = Platform.objects.all()
-        serializer = PlatformSerializer(platforms, many=True)
+        serializer = PlatformListSerializer(platforms, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 @method_decorator(csrf_protect, name='dispatch')
@@ -64,7 +65,7 @@ class PlatformCreateView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
     def post(self, request):
-        serializer = PlatformSerializer(data=request.data)
+        serializer = PlatformCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

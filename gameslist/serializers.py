@@ -33,12 +33,17 @@ class PlatformCreatorSerializer(serializers.ModelSerializer):
 
         return value
 
-class PlatformSerializer(serializers.ModelSerializer):
-    creator = PlatformCreatorSerializer(many=True, read_only=True)
+class PlatformListSerializer(serializers.ModelSerializer):
+    creator = PlatformCreatorSerializer(many=True)
     
     class Meta:
         model = Platform
         fields = '__all__'
+
+class PlatformCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Platform
+        fields = ['name', 'description', 'logo', 'creator', 'date_established']
         
     def validate_logo(self, value):
         image = Image.open(value)
@@ -52,6 +57,12 @@ class PlatformSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Image file size should be no more than 20mb')
 
         return value
+    
+    def create(self, validated_data):
+        creators = validated_data.pop('creator', [])
+        platform = Platform.objects.create(**validated_data)
+        platform.creator.set(creators)
+        return platform
 
 '''Comments'''
 class CommentRatingSerializer(serializers.ModelSerializer):
