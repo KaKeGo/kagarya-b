@@ -8,11 +8,21 @@ from PIL import Image
 
 from .models import (
     GameList, Type, Category, UserGameEntry, GameDeveloper, Founder,
-    Comment, CommentRaiting, Platform, PlatformCreator,
+    Comment, CommentRaiting, Platform, PlatformCreator, Tag,
 )
 
 User = get_user_model()
 
+'''Tag'''
+class TagListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+        
+class TagCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['name']
 
 '''Platform'''
 class PlatformCreatorSerializer(serializers.ModelSerializer):
@@ -78,6 +88,22 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['user', 'game', 'text', 'ratings', 'formatted_created_at']
+
+class CommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['text']
+        
+    def create(self, validated_data):
+        user = self.context['request'].user
+        game = self.context['game']
+        
+        comment = Comment.objects.create(
+            user=user,
+            game=game,
+            **validated_data
+        )
+        return comment
 
 '''Founders'''
 class Founder(serializers.ModelSerializer):
