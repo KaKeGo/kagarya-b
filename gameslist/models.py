@@ -40,6 +40,13 @@ COMMENTS_RAITING = (
     ('heart', 'heart'),
     ('surprise', 'surprise'),
     ('laugh', 'laugh'),
+    ('trash', 'trash'),
+)
+GAME_VERSION = (
+    ('alpha', 'alpha'),
+    ('beta', 'beta'),
+    ('early access', 'early access'),
+    ('full release', 'full release'),
 )
 
 def generate_random_slug(length=6):
@@ -74,10 +81,11 @@ class UserGameEntry(models.Model):
 
 '''Game List'''
 class GameList(models.Model):
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    game_version = models.CharField(max_length=30, choices=GAME_VERSION)
     title = models.CharField(max_length=200)
     body = models.TextField()
-    video = models.URLField(blank=True, null=True)
+    trailer = models.URLField(blank=True, null=True)
     cover = models.ImageField(upload_to='game/cover/', null=True, blank=True)
     game_type = models.ManyToManyField('Type')
     category = models.ManyToManyField('Category')
@@ -86,7 +94,7 @@ class GameList(models.Model):
     comments = models.ManyToManyField('Comment', blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
     release_date = models.DateField(blank=True, null=True)
-    status= models.CharField(max_length=100, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES)
     slug = models.SlugField(unique=True, null=True, blank=True)
     
     def __str__(self):
@@ -115,7 +123,7 @@ class Category(models.Model):
 
 '''Type'''
 class Type(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100,  null=True, unique=True)
     
     def __str__(self):
         return self.name
@@ -136,8 +144,7 @@ class GameDeveloper(models.Model):
         if not self.slug:
             self.slug = slugify(f'{self.name}')
         super().save(*args, **kwargs)
-    
-'''Founder'''
+        
 def get_default_founder_avatar():
     return 'default/avatar/founder.jpg'
 
@@ -173,13 +180,13 @@ class Comment(models.Model):
 class CommentRaiting(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     comment = models.ForeignKey(Comment, on_delete=models.PROTECT)
-    comment_raiting = models.CharField(max_length=10, choices=COMMENTS_RAITING)
+    comment_rating = models.CharField(max_length=10, choices=COMMENTS_RAITING)
     
     def __str__(self):
-        return f'{self.get_comment_raiting_display()} by {self.user.username}, on {self.comment}'
+        return f'{self.get_comment_rating_display()} by {self.user.username}, on {self.comment}'
     
     class Meta:
-        unique_together = ('user', 'comment', 'comment_raiting')
+        unique_together = ('user', 'comment', 'comment_rating')
 
 '''Tags'''
 class Tag(models.Model):

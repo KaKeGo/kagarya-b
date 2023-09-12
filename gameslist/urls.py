@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (
     GamesListView, AddGameToProfileView, PlatformCreatorListView, PlatformCreatorCreateView,
     PlatformCreateView, PlatformListView, TagListView, TagCreateView, CommentListView,
-    CommentCreateView,
+    CommentCreateView, CommentRatingCreateView, TypeListView, TypeCreateView
 )
 
 app_name = 'gamelist'
@@ -24,4 +24,8 @@ urlpatterns = [
     # Comments
     path('comment/', CommentListView.as_view(), name='comment_list'),
     path('comment/<int:game_id>/create/', CommentCreateView.as_view(), name='comment_create'),
+    path('comment/<int:comment_id>/add/', CommentRatingCreateView.as_view(), name='comment_rating_create'),
+    # Type
+    path('type/', TypeListView.as_view(), name='type_list'),
+    path('type/create/', TypeCreateView.as_view(), name='type_create'),
 ]

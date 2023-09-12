@@ -11,9 +11,10 @@ from .models import (
 from .serializers import (
     GamesListSerializer, UserGameEntrySerializer, PlatformCreatorSerializer, PlatformListSerializer,
     PlatformCreateSerializer, TagListSerializer, TagCreateSerializer, CommentSerializer,
-    CommentCreateSerializer,
-    
+    CommentCreateSerializer, CommentRatingCreateSerializer, TypeCreateSerializer, TypeSerializer,
+    CategoryCreateSerializer, CategorySerializer,
 )
+
 
 '''Game List'''
 class GamesListView(APIView):
@@ -110,6 +111,66 @@ class CommentCreateView(APIView):
         serializer = CommentCreateSerializer(data=request.data, context={
             'game': game, 'request': request
             })
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class CommentRatingCreateView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def post(self, request, comment_id):
+        try:
+            comment = Comment.objects.get(pk=comment_id)
+        except Comment.DoesNotExist:
+            return Response({'error': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CommentRatingCreateSerializer(data=request.data, context={
+                'request': request, 'comment': comment
+            })
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+'''Type'''
+class TypeListView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def get(self, request):
+        type = Type.objects.all()
+        serializer = TypeSerializer(type, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+@method_decorator(csrf_protect, name='dispatch')
+class TypeCreateView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def post(self, reqiest):
+        serializer = TypeCreateSerializer(data=reqiest.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+'''Category'''
+class CategoryListSerializer(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def get(self, request):
+        category = Category.objects.all()
+        serializer = CategorySerializer(category, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+@method_decorator(csrf_protect, name='dispatch')
+class CategoryCreateView(APIView):
+    permission_classes = [permissions.AllowAny, ] 
+    
+    def post(self, request):
+        serializer = CategoryCreateSerializer(data=request.data)
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
