@@ -1,10 +1,14 @@
 from django.urls import path
 
 from .views import (
-    GamesListView, AddGameToProfileView, PlatformCreatorListView, PlatformCreatorCreateView,
-    PlatformCreateView, PlatformListView, TagListView, TagCreateView, TagUpdateView,
-    CommentListView, CommentCreateView, CommentRatingCreateView, TypeListView, 
-    TypeCreateView
+    GamesListView, AddGameToProfileView, 
+    PlatformCreatorListView, PlatformCreatorCreateView,
+    PlatformCreateView, PlatformListView, 
+    TagListView, TagCreateView, TagUpdateView,
+    CommentListView, CommentCreateView, 
+    CommentRatingCreateView, 
+    TypeListView, TypeCreateView, 
+    CategoryListView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView,
 )
 
 app_name = 'gamelist'
@@ -30,4 +34,9 @@ urlpatterns = [
     # Type
     path('type/', TypeListView.as_view(), name='type_list'),
     path('type/create/', TypeCreateView.as_view(), name='type_create'),
+    # Category
+    path('category/', CategoryListView.as_view(), name='category_list'),
+    path('category/create/', CategoryCreateView.as_view(), name='category_create'),
+    path('category/<int:category_id>/update/', CategoryUpdateView.as_view(), name='category_update'),
+    path('category/<int:category_id>/delete/', CategoryDeleteView.as_view(), name='category_delete'),
 ]

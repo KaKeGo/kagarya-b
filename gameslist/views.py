@@ -191,7 +191,7 @@ class TypeUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 '''Category'''
-class CategoryListSerializer(APIView):
+class CategoryListView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
     def get(self, request):
