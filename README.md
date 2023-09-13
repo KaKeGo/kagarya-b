@@ -16,7 +16,7 @@ Kagarya is the place where you will find information on topics ranging from game
 <hr />
 ## Api documentation
 
- [Endpoints](https://api.kagarya.com).
+ [Endpoints](https://api.kagarya.com)
  [Not updated yet]
  
 <hr />
