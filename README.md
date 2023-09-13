@@ -1,6 +1,6 @@
 [![Logo projektu](https://files.fm/thumb.php?i=5f4yxt8hm)](https://www.kagarya.com)
 
-The website will have a different look for the time being
+For the time being, the website has a different look than the target design 
 
 <hr />
 Kagarya is the place where you will find information on topics ranging from games to films and where you can create your own list.
