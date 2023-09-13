@@ -2,8 +2,9 @@ from django.urls import path
 
 from .views import (
     GamesListView, AddGameToProfileView, PlatformCreatorListView, PlatformCreatorCreateView,
-    PlatformCreateView, PlatformListView, TagListView, TagCreateView, CommentListView,
-    CommentCreateView, CommentRatingCreateView, TypeListView, TypeCreateView
+    PlatformCreateView, PlatformListView, TagListView, TagCreateView, TagUpdateView,
+    CommentListView, CommentCreateView, CommentRatingCreateView, TypeListView, 
+    TypeCreateView
 )
 
 app_name = 'gamelist'
@@ -21,6 +22,7 @@ urlpatterns = [
     # Tags
     path('tags/', TagListView.as_view(), name='tag_list'),
     path('tags/create/', TagCreateView.as_view(), name='tag_create'),
+    path('tags/<int:tag_id>/update/', TagUpdateView.as_view(), name='tag_update'),
     # Comments
     path('comment/', CommentListView.as_view(), name='comment_list'),
     path('comment/<int:game_id>/create/', CommentCreateView.as_view(), name='comment_create'),

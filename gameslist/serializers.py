@@ -24,6 +24,11 @@ class TagCreateSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ['name']
 
+class TagUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['name']
+
 '''Platform'''
 class PlatformCreatorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -172,7 +177,7 @@ class TypeSerializer(serializers.ModelSerializer):
 class TypeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
-        fields = ['name',]
+        fields = ['name']
         
     def validate_name(self, value): 
         if len(value) < 3:
@@ -181,6 +186,11 @@ class TypeCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(f'Name cannot be longer than 20')
         
         return value
+
+class TypeUpdateSerializer(serializers.Serializer):
+    class Meta:
+        model = Type
+        fields = ['name']
                
 '''Game Serializer'''
 class GamesListSerializer(serializers.ModelSerializer):

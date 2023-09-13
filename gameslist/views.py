@@ -10,9 +10,9 @@ from .models import (
 )
 from .serializers import (
     GamesListSerializer, UserGameEntrySerializer, PlatformCreatorSerializer, PlatformListSerializer,
-    PlatformCreateSerializer, TagListSerializer, TagCreateSerializer, CommentSerializer,
-    CommentCreateSerializer, CommentRatingCreateSerializer, TypeCreateSerializer, TypeSerializer,
-    CategoryCreateSerializer, CategorySerializer,
+    PlatformCreateSerializer, TagListSerializer, TagCreateSerializer, TagUpdateSerializer,
+    CommentSerializer, CommentCreateSerializer, CommentRatingCreateSerializer, TypeCreateSerializer, TypeSerializer,
+    TypeUpdateSerializer, CategoryCreateSerializer, CategorySerializer,
 )
 
 
@@ -88,9 +88,27 @@ class TagCreateView(APIView):
     
     def post(self, request):
         serializer = TagCreateSerializer(data=request.data)
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class TagUpdateView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def put(self, request, tag_id):
+        try:
+            tag_instance = Tag.objects.get(pk=tag_id)
+        except Tag.DoesNotExist:
+            return Response({'message': 'Tag not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = TagUpdateSerializer(tag_instance, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 '''Comment'''
@@ -153,6 +171,23 @@ class TypeCreateView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class TypeUpdateView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def put(self, request, type_id):
+        try:
+            type_instance = Type.objects.get(pk=type_id)
+        except Type.DoesNotExist:
+            return Response({'message': 'Type not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = TypeUpdateSerializer(type_instance, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 '''Category'''
