@@ -11,11 +11,13 @@ Kagarya is the place where you will find information on topics ranging from game
 - Django Rest framework
 - JavaScript
 - React
+- Chat open api
 
 <hr />
 ## Api documentation
 
- *All api endpoints [tutaj](https://api.kagarya.com).
+ [Endpoints](https://api.kagarya.com).
+ [Not updated yet]
  
 <hr />
 ## Authors
