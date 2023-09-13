@@ -5,6 +5,7 @@ Kagarya is the place where you will find information on topics ranging from game
 
 <hr />
 ## Technologies 
+
 - Python
 - Django
 - Django Rest framework
@@ -13,8 +14,10 @@ Kagarya is the place where you will find information on topics ranging from game
 
 <hr />
 ## Api documentation
+
  *All api endpoints [tutaj](https://api.kagarya.com).
  
 <hr />
 ## Authors
+
 - Autor: Kakego
