@@ -227,3 +227,14 @@ class CategoryUpdateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class CategoryDeleteView(APIView):
+    def delete(self, request, category_id):
+        try:
+            category_instance = Category.objects.get(pk=category_id)
+        except Category.DoesNotExist:
+            return Response({'message': 'Category not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        category_instance.delete()
+        return Response({'message': 'Category deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)        
