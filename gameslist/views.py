@@ -12,7 +12,7 @@ from .serializers import (
     GamesListSerializer, UserGameEntrySerializer, PlatformCreatorSerializer, PlatformListSerializer,
     PlatformCreateSerializer, TagListSerializer, TagCreateSerializer, TagUpdateSerializer,
     CommentSerializer, CommentCreateSerializer, CommentRatingCreateSerializer, TypeCreateSerializer, TypeSerializer,
-    TypeUpdateSerializer, CategoryCreateSerializer, CategorySerializer,
+    TypeUpdateSerializer, CategoryCreateSerializer, CategorySerializer, CategoryUpdateSerializer,
 )
 
 
@@ -210,3 +210,20 @@ class CategoryCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class CategoryUpdateView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def put(self, request, category_id):
+        try:
+            category_instance = Category.objects.get(pk=category_id)
+        except Category.DoesNotExist:
+            return Response({'message': 'Category not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CategoryUpdateSerializer(category_instance, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

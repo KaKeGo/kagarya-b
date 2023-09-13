@@ -168,6 +168,11 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
         
         return value
 
+class CategoryUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['name']
+
 '''Game Type'''
 class TypeSerializer(serializers.ModelSerializer):
     class Meta:
