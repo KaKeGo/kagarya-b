@@ -190,6 +190,19 @@ class TypeUpdateView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@method_decorator(csrf_protect, name='dispatch')
+class TypeDeleteView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def delete(self, request, type_id):
+        try:
+            type_instance = Type.objects.get(pk=type_id)
+        except Type.DoesNotExist:
+            return Response({'message': 'Type not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        type_instance.delete()
+        return Response({'message': 'Type deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+
 '''Category'''
 class CategoryListView(APIView):
     permission_classes = [permissions.AllowAny, ]
