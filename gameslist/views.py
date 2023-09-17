@@ -12,7 +12,7 @@ from .serializers import (
     GamesListSerializer, 
     UserGameEntrySerializer, 
     PlatformCreatorSerializer, PlatformCreatorCreateSerializer, PlatformCreatorUpdateSerializer,
-    PlatformListSerializer,PlatformCreateSerializer, 
+    PlatformListSerializer,PlatformCreateSerializer, PlatformUpdateSerializer,
     TagListSerializer, TagCreateSerializer, TagUpdateSerializer,
     CommentSerializer, CommentCreateSerializer, CommentRatingCreateSerializer, 
     TypeSerializer, TypeCreateSerializer, TypeUpdateSerializer, 
@@ -95,7 +95,7 @@ class PlatformListView(APIView):
         platforms = Platform.objects.all()
         serializer = PlatformListSerializer(platforms, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
 @method_decorator(csrf_protect, name='dispatch')
 class PlatformCreateView(APIView):
     permission_classes = [permissions.AllowAny, ]
@@ -106,6 +106,36 @@ class PlatformCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class PlatformUpdateView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def put(self, request, pk):
+        try:
+            platform_instance = Platform.objects.get(pk=pk)
+        except Platform.DoesNotExist:
+            return Response({'message': 'Platform not found'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = PlatformUpdateSerializer(platform_instance, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class PlatformDeleteView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def delete(self, request, pk):
+        try:
+            platform = Platform.objects.get(pk=pk)
+        except Platform.DoesNotExist:
+            return Response({'message': 'Platform not found'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        platform.datele()
+        return Response({'message': 'Platform deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 '''Tag'''
 class TagListView(APIView):

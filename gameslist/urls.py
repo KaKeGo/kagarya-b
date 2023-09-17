@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (
     GamesListView, AddGameToProfileView, 
     PlatformCreatorListView, PlatformCreatorCreateView, PlatformCreatorUpdateView, PlatformCreatorDeleteView,
-    PlatformCreateView, PlatformListView, 
+    PlatformCreateView, PlatformListView, PlatformUpdateView, PlatformDeleteView,
     TagListView, TagCreateView, TagUpdateView, TagDeleteView,
     CommentListView, CommentCreateView, 
     CommentRatingCreateView, 
@@ -22,6 +22,8 @@ urlpatterns = [
     # Platfroms
     path('platform/', PlatformListView.as_view(), name='platform_list'),
     path('platform/create/', PlatformCreateView.as_view(), name='platform_create'),
+    path('platform/<int:pk>/update/', PlatformUpdateView.as_view(), name='platform_update'),
+    path('platform/<int:pk>/delete/', PlatformDeleteView.as_view(), name='platform_delete'),
     # Platgorm creators
     path('platform/creators/', PlatformCreatorListView.as_view(), name='platform_creators_list'),
     path('platform/creators/create/', PlatformCreatorCreateView.as_view(), name='platform_creator_create'), 

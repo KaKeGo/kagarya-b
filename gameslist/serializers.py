@@ -90,6 +90,11 @@ class PlatformCreateSerializer(serializers.ModelSerializer):
         platform.creator.set(creators)
         return platform
 
+class PlatformUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Platform
+        fields = ['name', 'description', 'logo', 'creator', 'date_established']
+
 '''Comments'''
 class CommentRatingSerializer(serializers.ModelSerializer):
     class Meta:
