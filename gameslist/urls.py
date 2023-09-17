@@ -40,7 +40,9 @@ urlpatterns = [
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment_update'),
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
     # Comments Raiting
-    path('comment/<int:pk>/add/', CommentRatingCreateView.as_view(), name='comment_rating_create'),
+    path('comment/raiting/<int:pk>/add/', CommentRatingCreateView.as_view(), name='comment_rating_create'),
+    path('comment/raiting/<int:pk>/update/', CommentRatingCreateView.as_view(), name='comment_rating_create'),
+    path('comment/raiting/<int:pk>/delete/', CommentRatingCreateView.as_view(), name='comment_rating_create'),
     # Type
     path('type/', TypeListView.as_view(), name='type_list'),
     path('type/create/', TypeCreateView.as_view(), name='type_create'),

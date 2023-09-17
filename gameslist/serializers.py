@@ -126,6 +126,11 @@ class CommentRatingCreateSerializer(serializers.ModelSerializer):
         )
         return comment_rating
 
+class CommentRaitingUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentRaiting
+        fields = ['comment_rating']
+
 '''Comments'''
 class CommentSerializer(serializers.ModelSerializer):
     ratings = serializers.StringRelatedField(many=True, read_only=True)
@@ -231,7 +236,7 @@ class GamesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = GameList
         fields = [
-            'id', 'cover', 'video', 'title', 'body', 'game_type',
+            'id', 'cover', 'trailer', 'title', 'body', 'game_type',
             'category', 'average_rating', 'developer', 'platforms',
             'comments', 'tags', 'release_date',
         ]
