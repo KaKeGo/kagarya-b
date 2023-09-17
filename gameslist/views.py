@@ -14,7 +14,8 @@ from .serializers import (
     PlatformCreatorSerializer, PlatformCreatorCreateSerializer, PlatformCreatorUpdateSerializer,
     PlatformListSerializer,PlatformCreateSerializer, PlatformUpdateSerializer,
     TagListSerializer, TagCreateSerializer, TagUpdateSerializer,
-    CommentSerializer, CommentCreateSerializer, CommentRatingCreateSerializer, 
+    CommentSerializer, CommentCreateSerializer, CommentUpdateSerializer,
+    CommentRatingCreateSerializer, 
     TypeSerializer, TypeCreateSerializer, TypeUpdateSerializer, 
     CategoryCreateSerializer, CategorySerializer, CategoryUpdateSerializer,
 )
@@ -210,6 +211,35 @@ class CommentCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class CommentUpdateView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def put(self, request, pk):
+        try:
+            comment = Comment.objects.get(pk=pk)
+        except Comment.DoesNotExist:
+            return Response({'message': 'Comment not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = CommentUpdateSerializer(comment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class CommentDeleteView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def delete(self, request, pk):
+        try:
+            comment = Comment.objects.get(pk=pk)
+        except Comment.DoesNotExist:
+            return Response({'message': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        comment.delete()
+        return Response({'message': 'Comment deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 @method_decorator(csrf_protect, name='dispatch')
 class CommentRatingCreateView(APIView):

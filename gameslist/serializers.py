@@ -95,7 +95,7 @@ class PlatformUpdateSerializer(serializers.ModelSerializer):
         model = Platform
         fields = ['name', 'description', 'logo', 'creator', 'date_established']
 
-'''Comments'''
+'''Comments Raiting'''
 class CommentRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommentRaiting
@@ -126,6 +126,7 @@ class CommentRatingCreateSerializer(serializers.ModelSerializer):
         )
         return comment_rating
 
+'''Comments'''
 class CommentSerializer(serializers.ModelSerializer):
     ratings = serializers.StringRelatedField(many=True, read_only=True)
     game = serializers.StringRelatedField()
@@ -133,7 +134,7 @@ class CommentSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Comment
-        fields = ['user', 'game', 'text', 'ratings', 'formatted_created_at']
+        fields = ['id', 'user', 'game', 'text', 'ratings', 'formatted_created_at']
 
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -150,6 +151,11 @@ class CommentCreateSerializer(serializers.ModelSerializer):
             **validated_data
         )
         return comment
+
+class CommentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['text']
 
 '''Founders'''
 class Founder(serializers.ModelSerializer):
