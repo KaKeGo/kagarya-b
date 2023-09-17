@@ -1,4 +1,4 @@
-[![Logo projektu](https://files.fm/thumb.php?i=5f4yxt8hm)](https://www.kagarya.com)
+[![Logo projektu](https://files.fm/thumb.php?i=5f4yxt8hm)](https://api.kagarya.com/)
 
 For the time being, the website has a different look than the target design 
 
