@@ -139,7 +139,7 @@ class CommentSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'game', 'text', 'ratings', 'formatted_created_at']
+        fields = ['id', 'user', 'game', 'text', 'ratings', 'formatted_created_at', 'count_ratings']
 
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:

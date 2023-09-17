@@ -6,7 +6,7 @@ from .views import (
     PlatformCreateView, PlatformListView, PlatformUpdateView, PlatformDeleteView,
     TagListView, TagCreateView, TagUpdateView, TagDeleteView,
     CommentListView, CommentCreateView, CommentUpdateView, CommentDeleteView,
-    CommentRatingCreateView, 
+    CommentRatingCreateView, CommentRaitingUpdateView, CommentRaitingDeleteView,
     TypeListView, TypeCreateView, TypeUpdateView,TypeDeleteView,
     CategoryListView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView,
 )
@@ -41,8 +41,8 @@ urlpatterns = [
     path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
     # Comments Raiting
     path('comment/raiting/<int:pk>/add/', CommentRatingCreateView.as_view(), name='comment_rating_create'),
-    path('comment/raiting/<int:pk>/update/', CommentRatingCreateView.as_view(), name='comment_rating_create'),
-    path('comment/raiting/<int:pk>/delete/', CommentRatingCreateView.as_view(), name='comment_rating_create'),
+    path('comment/raiting/<int:pk>/update/', CommentRaitingUpdateView.as_view(), name='comment_rating_create'),
+    path('comment/raiting/<int:pk>/delete/', CommentRaitingDeleteView.as_view(), name='comment_rating_create'),
     # Type
     path('type/', TypeListView.as_view(), name='type_list'),
     path('type/create/', TypeCreateView.as_view(), name='type_create'),

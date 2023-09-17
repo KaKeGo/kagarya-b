@@ -3,7 +3,7 @@ import random, string
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from django.utils.text import slugify
 
 from urllib.parse import quote
@@ -172,6 +172,11 @@ class Comment(models.Model):
     
     def __str__(self):
         return f'Comment by {self.user.username} on {self.game.title}'
+    
+    def count_ratings(self):
+        ratings = self.commentraiting_set.values('comment_rating').annotate(total=Count('comment_rating'))
+        raiting_counts = {rating['comment_rating']: rating['total'] for rating in ratings}
+        return raiting_counts
     
     @property
     def formatted_created_at(self):
