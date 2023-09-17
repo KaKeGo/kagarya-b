@@ -7,7 +7,7 @@ from .views import (
     TagListView, TagCreateView, TagUpdateView,
     CommentListView, CommentCreateView, 
     CommentRatingCreateView, 
-    TypeListView, TypeCreateView, 
+    TypeListView, TypeCreateView, TypeUpdateView,TypeDeleteView,
     CategoryListView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView,
 )
 
@@ -17,6 +17,7 @@ app_name = 'gamelist'
 urlpatterns = [
     # GameList
     path('', GamesListView.as_view(), name='game_list'),
+    # User Add Game List
     path('add-game/', AddGameToProfileView.as_view(), name='add_game_to_list'),
     # Platfroms
     path('platform/', PlatformListView.as_view(), name='platform_list'),
@@ -34,9 +35,11 @@ urlpatterns = [
     # Type
     path('type/', TypeListView.as_view(), name='type_list'),
     path('type/create/', TypeCreateView.as_view(), name='type_create'),
+    path('type/<int:type_id>/update/', TypeUpdateView.as_view(), name='type_update'),
+    path('type/<int:type_id>/delete/', TypeDeleteView.as_view(), name='type_delete'),
     # Category
     path('category/', CategoryListView.as_view(), name='category_list'),
     path('category/create/', CategoryCreateView.as_view(), name='category_create'),
-    path('category/<int:category_id>/update/', CategoryUpdateView.as_view(), name='category_update'),
-    path('category/<int:category_id>/delete/', CategoryDeleteView.as_view(), name='category_delete'),
+    # path('category/<int:category_id>/update/', CategoryUpdateView.as_view(), name='category_update'),
+    # path('category/<int:category_id>/delete/', CategoryDeleteView.as_view(), name='category_delete'),
 ]

@@ -192,7 +192,7 @@ class TypeCreateSerializer(serializers.ModelSerializer):
         
         return value
 
-class TypeUpdateSerializer(serializers.Serializer):
+class TypeUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
         fields = ['name']

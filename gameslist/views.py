@@ -9,10 +9,13 @@ from .models import (
     GameList, Type, Category, PlatformCreator, Platform, Tag, Comment, CommentRaiting,
 )
 from .serializers import (
-    GamesListSerializer, UserGameEntrySerializer, PlatformCreatorSerializer, PlatformListSerializer,
-    PlatformCreateSerializer, TagListSerializer, TagCreateSerializer, TagUpdateSerializer,
-    CommentSerializer, CommentCreateSerializer, CommentRatingCreateSerializer, TypeCreateSerializer, TypeSerializer,
-    TypeUpdateSerializer, CategoryCreateSerializer, CategorySerializer, CategoryUpdateSerializer,
+    GamesListSerializer, 
+    UserGameEntrySerializer, 
+    PlatformCreatorSerializer, PlatformListSerializer,PlatformCreateSerializer, 
+    TagListSerializer, TagCreateSerializer, TagUpdateSerializer,
+    CommentSerializer, CommentCreateSerializer, CommentRatingCreateSerializer, 
+    TypeSerializer, TypeCreateSerializer, TypeUpdateSerializer, 
+    CategoryCreateSerializer, CategorySerializer, CategoryUpdateSerializer,
 )
 
 
@@ -110,6 +113,19 @@ class TagUpdateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class TagDeleteView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def delete(self, request, tag_id):
+        try:
+            tag_instance = Tag.objects.get(pk=tag_id)
+        except Tag.DoesNotExist:
+            return Response({'message': 'Tag not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        tag_instance.delete()
+        return Response({'message': 'Tag deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
 
 '''Comment'''
 class CommentListView(APIView):
