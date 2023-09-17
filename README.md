@@ -1,7 +1,27 @@
-# KaGaRya
+[![Logo projektu](https://files.fm/thumb.php?i=5f4yxt8hm)](https://www.kagarya.com/)
 
-<p>
-Its my site to study backend i do it for my self and now i using open ai to learn how to work with it
-</p>
+For the time being, the website has a different look than the target design 
 
-<a href="http://www.kagarya.com">Kagarya</a>
+<hr />
+Kagarya is the place where you will find information on topics ranging from games to films and where you can create your own list.
+
+<hr />
+## Technologies 
+
+- Python
+- Django
+- Django Rest framework
+- JavaScript
+- React
+- Chat open api
+
+<hr />
+## Api documentation
+
+ [Endpoints](https://api.kagarya.com)
+ [Not updated yet]
+ 
+<hr />
+## Authors
+
+- Autor: Kakego

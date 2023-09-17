@@ -29,11 +29,16 @@ class TagUpdateSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ['name']
 
-'''Platform'''
+'''Platform Creators'''
 class PlatformCreatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlatformCreator
         fields = '__all__'
+  
+class PlatformCreatorCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlatformCreator
+        fields = ['first_name', 'last_name', 'bio', 'photo']
         
     def validate_photo(self, value):
         image = Image.open(value)
@@ -47,7 +52,13 @@ class PlatformCreatorSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Image file size should be no more than 20mb')
 
         return value
+    
+class PlatformCreatorUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlatformCreator
+        fields = ['first_name', 'last_name', 'bio', 'photo']
 
+'''Platform'''
 class PlatformListSerializer(serializers.ModelSerializer):
     creator = PlatformCreatorSerializer(many=True)
     

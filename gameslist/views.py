@@ -11,7 +11,8 @@ from .models import (
 from .serializers import (
     GamesListSerializer, 
     UserGameEntrySerializer, 
-    PlatformCreatorSerializer, PlatformListSerializer,PlatformCreateSerializer, 
+    PlatformCreatorSerializer, PlatformCreatorCreateSerializer, PlatformCreatorUpdateSerializer,
+    PlatformListSerializer,PlatformCreateSerializer, 
     TagListSerializer, TagCreateSerializer, TagUpdateSerializer,
     CommentSerializer, CommentCreateSerializer, CommentRatingCreateSerializer, 
     TypeSerializer, TypeCreateSerializer, TypeUpdateSerializer, 
@@ -37,7 +38,7 @@ class AddGameToProfileView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-'''Platform'''
+'''Platform Creator'''
 class PlatformCreatorListView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
@@ -51,12 +52,42 @@ class PlatformCreatorCreateView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
     def post(self, request):
-        serializer = PlatformCreatorSerializer(data=request.data)
+        serializer = PlatformCreatorCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@method_decorator(csrf_protect, name='dispatch')
+class PlatformCreatorUpdateView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+
+    def put(self, request, pk):
+        try:
+            platform_creator = PlatformCreator.objects.get(pk=pk)
+        except PlatformCreator.DoesNotExist:
+            return Response({'message': 'Platform creator not found.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = PlatformCreatorUpdateSerializer(platform_creator, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class PlatformCreatorDeleteView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def delete(self, request, pk):
+        try:
+            platform_creator = PlatformCreator.objects.get(pk=pk)
+        except PlatformCreator.DoesNotExist:
+            return Response({'message': 'Platgorm creator not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        platform_creator.delete()
+        return Response({'message': 'Platform creator deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+
+'''Platform'''
 class PlatformListView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
@@ -101,9 +132,9 @@ class TagCreateView(APIView):
 class TagUpdateView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
-    def put(self, request, tag_id):
+    def put(self, request, pk):
         try:
-            tag_instance = Tag.objects.get(pk=tag_id)
+            tag_instance = Tag.objects.get(pk=pk)
         except Tag.DoesNotExist:
             return Response({'message': 'Tag not found'}, status=status.HTTP_404_NOT_FOUND)
         
@@ -118,9 +149,9 @@ class TagUpdateView(APIView):
 class TagDeleteView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
-    def delete(self, request, tag_id):
+    def delete(self, request, pk):
         try:
-            tag_instance = Tag.objects.get(pk=tag_id)
+            tag_instance = Tag.objects.get(pk=pk)
         except Tag.DoesNotExist:
             return Response({'message': 'Tag not found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -140,8 +171,8 @@ class CommentListView(APIView):
 class CommentCreateView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
-    def post(self, request, game_id):
-        game = GameList.objects.get(pk=game_id)
+    def post(self, request, pk):
+        game = GameList.objects.get(pk=pk)
         serializer = CommentCreateSerializer(data=request.data, context={
             'game': game, 'request': request
             })
@@ -154,9 +185,9 @@ class CommentCreateView(APIView):
 class CommentRatingCreateView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
-    def post(self, request, comment_id):
+    def post(self, request, pk):
         try:
-            comment = Comment.objects.get(pk=comment_id)
+            comment = Comment.objects.get(pk=pk)
         except Comment.DoesNotExist:
             return Response({'error': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -193,9 +224,9 @@ class TypeCreateView(APIView):
 class TypeUpdateView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
-    def put(self, request, type_id):
+    def put(self, request, pk):
         try:
-            type_instance = Type.objects.get(pk=type_id)
+            type_instance = Type.objects.get(pk=pk)
         except Type.DoesNotExist:
             return Response({'message': 'Type not found'}, status=status.HTTP_404_NOT_FOUND)
         
@@ -210,9 +241,9 @@ class TypeUpdateView(APIView):
 class TypeDeleteView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
-    def delete(self, request, type_id):
+    def delete(self, request, pk):
         try:
-            type_instance = Type.objects.get(pk=type_id)
+            type_instance = Type.objects.get(pk=pk)
         except Type.DoesNotExist:
             return Response({'message': 'Type not found'}, status=status.HTTP_404_NOT_FOUND)
         
@@ -244,9 +275,9 @@ class CategoryCreateView(APIView):
 class CategoryUpdateView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
-    def put(self, request, category_id):
+    def put(self, request, pk):
         try:
-            category_instance = Category.objects.get(pk=category_id)
+            category_instance = Category.objects.get(pk=pk)
         except Category.DoesNotExist:
             return Response({'message': 'Category not found.'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -259,9 +290,9 @@ class CategoryUpdateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class CategoryDeleteView(APIView):
-    def delete(self, request, category_id):
+    def delete(self, request, pk):
         try:
-            category_instance = Category.objects.get(pk=category_id)
+            category_instance = Category.objects.get(pk=pk)
         except Category.DoesNotExist:
             return Response({'message': 'Category not found.'}, status=status.HTTP_404_NOT_FOUND)
         
