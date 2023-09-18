@@ -2,6 +2,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
+from django.db.models import Avg, F, FloatField
+from django.db.models.functions import Coalesce
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -87,6 +89,15 @@ class RecentlyAddedGamesView(APIView):
         games = GameList.objects.order_by('-id')[:5]
         serializer = GamesListSerializer(games, many=True)
         return Response(serializer.data)
+
+class TopRatedGamesView(APIView):
+    def get(self, request):
+        top_rated_games = GameList.objects.annotate(
+            avg_rating=Coalesce(Avg(F('usergameentry__rating')), 0, output_field=FloatField())
+        ).order_by('-avg_rating')[:10]
+
+        serializer = GamesListSerializer(top_rated_games, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 '''Game List Entry'''
 @method_decorator(csrf_protect, name='dispatch')

@@ -10,7 +10,7 @@ from .views import (
     CommentRatingCreateView, CommentRaitingUpdateView, CommentRaitingDeleteView,
     TypeListView, TypeCreateView, TypeUpdateView,TypeDeleteView,
     CategoryListView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView,
-    RecentlyAddedGamesView,
+    RecentlyAddedGamesView, TopRatedGamesView,
 )
 
 app_name = 'gamelist'
@@ -61,4 +61,5 @@ urlpatterns = [
     path('category/<int:pk>/delete/', CategoryDeleteView.as_view(), name='category_delete'),
     #Games events
     path('recentlygames/', RecentlyAddedGamesView.as_view(), name='recentlygames'),
+    path('topratedgames/', TopRatedGamesView.as_view(), name='topratedgames'),
 ]
