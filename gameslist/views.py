@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
+from django.shortcuts import get_object_or_404
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -29,6 +30,12 @@ class GamesListView(APIView):
     def get(self, request):
         game_list = GameList.objects.all()
         serializer = GamesListSerializer(game_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class GameListDetailView(APIView):
+    def get(self, request, slug):
+        game_list = get_object_or_404(GameList, slug=slug)
+        serializer = GamesListSerializer(game_list)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 @method_decorator(csrf_protect, name='dispatch')

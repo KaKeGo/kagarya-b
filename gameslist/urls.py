@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import (
-    GamesListView, GameListCreateView, GameListUpdateView, GameListDeleteView,
+    GamesListView, GameListDetailView, GameListCreateView, GameListUpdateView, GameListDeleteView,
     AddGameToProfileView, 
     PlatformCreatorListView, PlatformCreatorCreateView, PlatformCreatorUpdateView, PlatformCreatorDeleteView,
     PlatformCreateView, PlatformListView, PlatformUpdateView, PlatformDeleteView,
@@ -20,6 +20,7 @@ urlpatterns = [
     # GameList
     path('', GamesListView.as_view(), name='game_list'),
     path('create/', GameListCreateView.as_view(), name='game_create'),
+    path('detail/<slug>/', GameListDetailView.as_view(), name='game_detail'),
     path('<slug>/update/', GameListUpdateView.as_view(), name='game_update'),
     path('<slug>/delete/', GameListDeleteView.as_view(), name='game_delete'),
     # User Add Game List
