@@ -10,6 +10,7 @@ from .views import (
     CommentRatingCreateView, CommentRaitingUpdateView, CommentRaitingDeleteView,
     TypeListView, TypeCreateView, TypeUpdateView,TypeDeleteView,
     CategoryListView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView,
+    RecentlyAddedGamesView,
 )
 
 app_name = 'gamelist'
@@ -19,8 +20,8 @@ urlpatterns = [
     # GameList
     path('', GamesListView.as_view(), name='game_list'),
     path('create/', GameListCreateView.as_view(), name='game_create'),
-    path('<int:pk>/update/', GameListUpdateView.as_view(), name='game_update'),
-    path('<int:pk>/delete/', GameListDeleteView.as_view(), name='game_delete'),
+    path('<slug>/update/', GameListUpdateView.as_view(), name='game_update'),
+    path('<slug>/delete/', GameListDeleteView.as_view(), name='game_delete'),
     # User Add Game List
     path('add-game/', AddGameToProfileView.as_view(), name='add_game_to_list'),
     # Platfroms
@@ -57,4 +58,6 @@ urlpatterns = [
     path('category/create/', CategoryCreateView.as_view(), name='category_create'),
     path('category/<int:pk>/update/', CategoryUpdateView.as_view(), name='category_update'),
     path('category/<int:pk>/delete/', CategoryDeleteView.as_view(), name='category_delete'),
+    #Games events
+    path('recentlygames/', RecentlyAddedGamesView.as_view(), name='recentlygames'),
 ]

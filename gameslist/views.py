@@ -1,11 +1,10 @@
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
+from django.utils.text import slugify
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions, status
-
-from urllib.parse import quote
 
 from .models import (
     GameList, Type, Category, PlatformCreator, Platform, Tag, Comment, CommentRaiting,
@@ -41,7 +40,7 @@ class GameListCreateView(APIView):
         if serializer.is_valid():
             game_list = serializer.save()
             
-            game_list.slug = quote(f'{game_list.id}/{game_list.title}')
+            game_list.slug = slugify(f'{game_list.id}/{game_list.title}')
             game_list.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -50,9 +49,9 @@ class GameListCreateView(APIView):
 class GameListUpdateView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
-    def put(self, request, pk):
+    def put(self, request, slug):
         try:
-            game = GameList.objects.get(pk=pk)
+            game = GameList.objects.get(slug=slug)
         except GameList.DoesNotExist:
             return Response({'message': 'Game not found'}, status=status.HTTP_404_NOT_FOUND)
         
@@ -66,14 +65,21 @@ class GameListUpdateView(APIView):
 class GameListDeleteView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
-    def delete(self, request, pk):
+    def delete(self, request, slug):
         try:
-            game_list = GameList.objects.get(pk=pk)
+            game_list = GameList.objects.get(slug=slug)
         except GameList.DoesNotExist:
             return Response({'message': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
         
         game_list.delete()
         return Response({'message': 'Game deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
+'''Games event list'''
+class RecentlyAddedGamesView(APIView):
+    def get(self, request):
+        games = GameList.objects.order_by('-id')[:5]
+        serializer = GamesListSerializer(games, many=True)
+        return Response(serializer.data)
 
 '''Game List Entry'''
 @method_decorator(csrf_protect, name='dispatch')
