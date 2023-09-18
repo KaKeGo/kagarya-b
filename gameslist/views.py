@@ -9,7 +9,7 @@ from .models import (
     GameList, Type, Category, PlatformCreator, Platform, Tag, Comment, CommentRaiting,
 )
 from .serializers import (
-    GamesListSerializer, 
+    GamesListSerializer, GameUpdateSerializer,
     UserGameEntrySerializer, 
     PlatformCreatorSerializer, PlatformCreatorCreateSerializer, PlatformCreatorUpdateSerializer,
     PlatformListSerializer,PlatformCreateSerializer, PlatformUpdateSerializer,
@@ -30,7 +30,37 @@ class GamesListView(APIView):
         serializer = GamesListSerializer(game_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+@method_decorator(csrf_protect, name='dispatch')
+class GameListUpdateView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def put(self, request, pk):
+        try:
+            game = GameList.objects.get(pk=pk)
+        except GameList.DoesNotExist:
+            return Response({'message': 'Game not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = GameUpdateSerializer(game, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class GameListDeleteView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def delete(self, request, pk):
+        try:
+            game_list = GameList.objects.get(pk=pk)
+        except GameList.DoesNotExist:
+            return Response({'message': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        game_list.delete()
+        return Response({'message': 'Game deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
 '''Game List Entry'''
+@method_decorator(csrf_protect, name='dispatch')
 class AddGameToProfileView(APIView):
     def post(self, request):
         serializer = UserGameEntrySerializer(data=request.data, context={'request': request})
