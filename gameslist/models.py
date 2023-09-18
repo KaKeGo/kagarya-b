@@ -6,8 +6,6 @@ from django.utils import timezone
 from django.db.models import Avg, Count
 from django.utils.text import slugify
 
-from urllib.parse import quote
-
 User = get_user_model()
 
 # Create your models here.
@@ -83,7 +81,7 @@ class UserGameEntry(models.Model):
 class GameList(models.Model):
     added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     game_version = models.CharField(max_length=30, choices=GAME_VERSION)
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, unique=True)
     body = models.TextField()
     trailer = models.URLField(blank=True, null=True)
     cover = models.ImageField(upload_to='game/cover/', null=True, blank=True)
@@ -99,13 +97,6 @@ class GameList(models.Model):
     
     def __str__(self):
         return self.title
-    
-    def save(self, *args, **kwargs):
-        if not self.id:
-            super().save(*args, **kwargs)
-        if not self.slug:
-            self.slug = quote(f'{self.id}/{self.title}')
-        super().save(*args, **kwargs)
     
     @property
     def average_rating(self):

@@ -236,25 +236,32 @@ class GamesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = GameList
         fields = [
-            'id', 'cover', 'trailer', 'title', 'body', 'game_type',
+            'id', 'cover', 'game_version', 'trailer', 'title', 'body', 'game_type',
             'category', 'average_rating', 'developer', 'platforms',
-            'comments', 'tags', 'release_date',
+            'comments', 'tags', 'release_date', 'slug',
         ]
 
 class GameListCreateSerializer(serializers.ModelSerializer):
     cover = serializers.ImageField(validators=[
             FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png']),
-        ])
-    video = serializers.URLField(validators=[URLValidator()])
+        ], required=False)
+    trailer = serializers.URLField(validators=[URLValidator()], required=False)
     
     class Meta:
         model = GameList
         fields = [
-            'title', 'body', 'video', 'cover', 'game_type', 'category',
-            'status', 'developer', 'platforms', 'tags', 'release_date',
+            'id', 'cover', 'game_version', 'trailer', 'title', 'body', 'game_type',
+            'category', 'average_rating', 'developer', 'platforms',
+            'comments', 'tags', 'release_date',
         ]
         
     def validate_title(self, value):
+        existing_instance = GameList.objects.filter(title=value).exclude(
+            id=self.instance.id if self.instance else None
+        ).first()
+        if existing_instance:
+            raise serializers.ValidationError('Title must be unique. This title already exists.')
+        
         if len(value) <0:
             raise serializers.ValidationError('Title should be at least 2 characters')
         elif len(value) >200:
@@ -282,23 +289,30 @@ class GameListCreateSerializer(serializers.ModelSerializer):
         
         return value
     
-    def validate_video(self, value):
+    def validate_trailer(self, value):
         url_validator = URLValidator()
         try:
             url_validator(value)
         except ValidationError:
-            raise serializers.ValidationError('Invalid video URL')
+            raise serializers.ValidationError('Invalid trailer URL')
         return value
 
 class GameUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = GameList
         fields = [
-            'title', 'body', 'video', 'cover', 'game_type', 'category',
-            'status', 'developer', 'platforms', 'tags', 'release_date',
+            'id', 'cover', 'game_version', 'trailer', 'title', 'body', 'game_type',
+            'category', 'average_rating', 'developer', 'platforms',
+            'comments', 'tags', 'release_date',
         ]
     
     def validate_title(self, value):
+        existing_instance = GameList.objects.filter(title=value).exclude(
+            id=self.instance.id if self.instance else None
+        ).first()
+        if existing_instance:
+            raise serializers.ValidationError('Title must be unique. This title already exists.')
+        
         if len(value) <0:
             raise serializers.ValidationError('Title should be at least 2 characters')
         elif len(value) >200:
@@ -326,12 +340,12 @@ class GameUpdateSerializer(serializers.ModelSerializer):
         
         return value
     
-    def validate_video(self, value):
+    def validate_trailer(self, value):
         url_validator = URLValidator()
         try:
             url_validator(value)
         except ValidationError:
-            raise serializers.ValidationError('Invalid video URL')
+            raise serializers.ValidationError('Invalid trailer URL')
         return value
 
 '''User Game List'''

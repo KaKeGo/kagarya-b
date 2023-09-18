@@ -5,11 +5,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions, status
 
+from urllib.parse import quote
+
 from .models import (
     GameList, Type, Category, PlatformCreator, Platform, Tag, Comment, CommentRaiting,
 )
 from .serializers import (
-    GamesListSerializer, GameUpdateSerializer,
+    GamesListSerializer, GameListCreateSerializer, GameUpdateSerializer,
     UserGameEntrySerializer, 
     PlatformCreatorSerializer, PlatformCreatorCreateSerializer, PlatformCreatorUpdateSerializer,
     PlatformListSerializer,PlatformCreateSerializer, PlatformUpdateSerializer,
@@ -29,6 +31,20 @@ class GamesListView(APIView):
         game_list = GameList.objects.all()
         serializer = GamesListSerializer(game_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+@method_decorator(csrf_protect, name='dispatch')
+class GameListCreateView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+    
+    def post(self, request):
+        serializer = GameListCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            game_list = serializer.save()
+            
+            game_list.slug = quote(f'{game_list.id}/{game_list.title}')
+            game_list.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @method_decorator(csrf_protect, name='dispatch')
 class GameListUpdateView(APIView):
