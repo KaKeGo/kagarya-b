@@ -236,8 +236,8 @@ class GamesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = GameList
         fields = [
-            'id', 'cover', 'game_version', 'trailer', 'title', 'body', 'game_type',
-            'category', 'average_rating', 'developer', 'platforms',
+            'id', 'cover', 'game_version', 'game_mode', 'trailer', 'title', 'body', 
+            'game_type', 'category', 'average_rating', 'developer', 'platforms',
             'comments', 'tags', 'release_date', 'game_slug',
         ]
 

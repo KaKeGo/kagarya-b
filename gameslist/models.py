@@ -46,10 +46,11 @@ GAME_VERSION = (
     ('early access', 'early access'),
     ('full release', 'full release'),
 )
-PLAYERS = (
-    ('single player', 'single player'),
-    ('cooperation', 'cooperation'),
-    ('multi-platform multiplayer', 'multi-platform multiplayer'),
+GAME_MODE = (
+    ('single-player', 'single-player'),
+    ('online PvP', 'online PvP'),
+    ('online co-op', 'online co-op'),
+    ('cross-platform multiplayer', 'cross-platform multiplayer'),
 )
 
 def generate_random_slug(length=6):
@@ -86,7 +87,7 @@ class UserGameEntry(models.Model):
 class GameList(models.Model):
     added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     game_version = models.CharField(max_length=30, choices=GAME_VERSION)
-    players = models.CharField(max_length=30, choices=PLAYERS)
+    game_mode = models.CharField(max_length=30, choices=GAME_MODE)
     title = models.CharField(max_length=200, unique=True)
     body = models.TextField()
     trailer = models.URLField(blank=True, null=True)
