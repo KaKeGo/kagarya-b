@@ -238,7 +238,7 @@ class GamesListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'cover', 'game_version', 'trailer', 'title', 'body', 'game_type',
             'category', 'average_rating', 'developer', 'platforms',
-            'comments', 'tags', 'release_date', 'slug',
+            'comments', 'tags', 'release_date', 'game_slug',
         ]
 
 class GameListCreateSerializer(serializers.ModelSerializer):

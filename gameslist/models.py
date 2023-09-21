@@ -46,6 +46,11 @@ GAME_VERSION = (
     ('early access', 'early access'),
     ('full release', 'full release'),
 )
+PLAYERS = (
+    ('single player', 'single player'),
+    ('cooperation', 'cooperation'),
+    ('multi-platform multiplayer', 'multi-platform multiplayer'),
+)
 
 def generate_random_slug(length=6):
     characters = string.ascii_letters + string.digits
@@ -81,20 +86,21 @@ class UserGameEntry(models.Model):
 class GameList(models.Model):
     added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     game_version = models.CharField(max_length=30, choices=GAME_VERSION)
+    players = models.CharField(max_length=30, choices=PLAYERS)
     title = models.CharField(max_length=200, unique=True)
     body = models.TextField()
     trailer = models.URLField(blank=True, null=True)
     cover = models.ImageField(upload_to='game/cover/', null=True, blank=True)
     game_type = models.ManyToManyField('Type', blank=True)
     category = models.ManyToManyField('Category', blank=True)
-    game_publisher = models.ManyToManyField('GamePublisher', blank=True)
-    developer = models.ForeignKey('GameDeveloper', on_delete=models.PROTECT, blank=True, null=True)
+    developer = models.ForeignKey('GameDeveloper', on_delete=models.PROTECT, blank=True, null=True, related_name='game_developer')
+    game_publisher = models.ForeignKey('GamePublisher', on_delete=models.PROTECT, blank=True, related_name='game_publisher')
     platforms = models.ManyToManyField('Platform', blank=True)
     comments = models.ManyToManyField('Comment', blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
     release_date = models.DateField(blank=True, null=True)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES)
-    slug = models.SlugField(unique=True, null=True, blank=True)
+    game_slug = models.SlugField(unique=True, null=True, blank=True)
     
     def __str__(self):
         return self.title
@@ -127,7 +133,7 @@ class GameDeveloper(models.Model):
     description = models.TextField(blank=True, null=True)
     founders = models.ManyToManyField('Founder', blank=True)
     established_date = models.DateField()
-    slug = models.SlugField(unique=True, blank=True)
+    developer_slug = models.SlugField(unique=True, blank=True)
     
     def __str__(self):
         return self.name
@@ -150,7 +156,7 @@ class Founder(models.Model):
     last_name = models.CharField(max_length=40)
     bio = models.TextField(blank=True, null=True)
     photo = models.ImageField(upload_to='founder_photos/', default=get_default_founder_avatar)
-    slug = models.SlugField(unique=True, blank=True)
+    founder_slug = models.SlugField(unique=True, blank=True)
     
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -204,7 +210,7 @@ class Platform(models.Model):
     description = models.TextField(max_length=500, blank=True, null=True)
     date_established = models.DateField(blank=True, null=True)
     creator = models.ManyToManyField('PlatformCreator', blank=True)
-    slug = models.SlugField(unique=True, blank=True)
+    platform_slug = models.SlugField(unique=True, blank=True)
     
     def __str__(self):
         return self.name
@@ -220,7 +226,7 @@ class PlatformCreator(models.Model):
     last_name = models.CharField(max_length=40)
     bio = models.TextField(max_length=500, blank=True, null=True)
     photo = models.ImageField(upload_to='founder_photos/', default=get_default_founder_avatar)
-    slug = models.SlugField(unique=True, blank=True)
+    platform_creator_slug = models.SlugField(unique=True, blank=True)
     
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
