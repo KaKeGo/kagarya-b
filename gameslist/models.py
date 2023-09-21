@@ -87,6 +87,7 @@ class GameList(models.Model):
     cover = models.ImageField(upload_to='game/cover/', null=True, blank=True)
     game_type = models.ManyToManyField('Type', blank=True)
     category = models.ManyToManyField('Category', blank=True)
+    game_publisher = models.ManyToManyField('GamePublisher', blank=True)
     developer = models.ForeignKey('GameDeveloper', on_delete=models.PROTECT, blank=True, null=True)
     platforms = models.ManyToManyField('Platform', blank=True)
     comments = models.ManyToManyField('Comment', blank=True)
@@ -118,8 +119,8 @@ class Type(models.Model):
     
     def __str__(self):
         return self.name
-    
-'''Games Developers'''
+
+'''Game Developers'''
 class GameDeveloper(models.Model):
     name = models.CharField(max_length=200)
     logo = models.ImageField(upload_to='company_logo/')
@@ -139,6 +140,11 @@ class GameDeveloper(models.Model):
 def get_default_founder_avatar():
     return 'default/avatar/founder.jpg'
 
+'''Game Publisher'''
+class GamePublisher(GameDeveloper):
+    pass
+
+'''Founder'''
 class Founder(models.Model):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
