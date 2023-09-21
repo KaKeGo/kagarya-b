@@ -103,8 +103,22 @@ class TopRatedGamesView(APIView):
 class UpcomingGameListView(APIView):
     def get(self, request):
         today = timezone.now().date()
-        upcoming_games = GameList.objects.filter(release_date__gte=today).order_by('release_date')[:10]
+        upcoming_games = GameList.objects.filter(release_date__gt=today).order_by('release_date')[:10]
         serializer = GamesListSerializer(upcoming_games, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class RelesedTodayGameView(APIView):
+    def get(self, request):
+        today = timezone.now().date()
+        relesed_today_games = GameList.objects.filter(release_date=today)
+        serializer = GamesListSerializer(relesed_today_games, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class RecentlyReleasedGameView(APIView):
+    def get(self, request):
+        today = timezone.now().date()
+        recently_released_games = GameList.objects.filter(release_date__lt=today).order_by('-release_date')[:10]
+        serializer = GamesListSerializer(recently_released_games, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 '''Game List Entry'''
