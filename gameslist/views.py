@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
+from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg, F, FloatField
 from django.db.models.functions import Coalesce
@@ -49,7 +50,7 @@ class GameListCreateView(APIView):
         if serializer.is_valid():
             game_list = serializer.save()
             
-            game_list.slug = slugify(f'{game_list.id}/{game_list.title}')
+            game_list.game_slug = slugify(f'{game_list.id}/{game_list.title}')
             game_list.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -97,6 +98,13 @@ class TopRatedGamesView(APIView):
         ).order_by('-avg_rating')[:10]
 
         serializer = GamesListSerializer(top_rated_games, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UpcomingGameListView(APIView):
+    def get(self, request):
+        today = timezone.now().date()
+        upcoming_games = GameList.objects.filter(release_date__gte=today).order_by('release_date')[:10]
+        serializer = GamesListSerializer(upcoming_games, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 '''Game List Entry'''

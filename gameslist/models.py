@@ -95,7 +95,7 @@ class GameList(models.Model):
     game_type = models.ManyToManyField('Type', blank=True)
     category = models.ManyToManyField('Category', blank=True)
     developer = models.ForeignKey('GameDeveloper', on_delete=models.PROTECT, blank=True, null=True, related_name='game_developer')
-    game_publisher = models.ForeignKey('GamePublisher', on_delete=models.PROTECT, blank=True, related_name='game_publisher')
+    game_publisher = models.ForeignKey('GamePublisher', on_delete=models.PROTECT, null=True, blank=True, related_name='game_publisher')
     platforms = models.ManyToManyField('Platform', blank=True)
     comments = models.ManyToManyField('Comment', blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
