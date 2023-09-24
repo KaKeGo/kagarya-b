@@ -46,7 +46,7 @@ def slug_save(sender, instance, **kwargs):
 
 @receiver(post_save, sender=User)
 def create_roles(sender, instance, created, **kwargs):
-    if created:
+    if created and not Roles.objects.exists():
         roles = ['Admin', 'Staff', 'GameCreator']
         for role_name in roles:
             Roles.objects.get_or_create(
