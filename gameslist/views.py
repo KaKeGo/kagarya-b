@@ -129,6 +129,8 @@ class RecentlyReleasedGameView(APIView):
 '''Game List Entry'''
 @method_decorator(csrf_protect, name='dispatch')
 class AddGameToProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request):
         serializer = UserGameEntrySerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
@@ -137,9 +139,7 @@ class AddGameToProfileView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 '''Platform Creator'''
-class PlatformCreatorListView(APIView):
-    permission_classes = [permissions.AllowAny, ]
-    
+class PlatformCreatorListView(APIView): 
     def get(self, request):
         creators = PlatformCreator.objects.all()
         serializer = PlatformCreatorSerializer(creators, many=True)
@@ -147,7 +147,9 @@ class PlatformCreatorListView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class PlatformCreatorCreateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def post(self, request):
         serializer = PlatformCreatorCreateSerializer(data=request.data)
@@ -158,7 +160,9 @@ class PlatformCreatorCreateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class PlatformCreatorUpdateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
 
     def put(self, request, pk):
         try:
@@ -174,7 +178,9 @@ class PlatformCreatorUpdateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class PlatformCreatorDeleteView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def delete(self, request, pk):
         try:
@@ -187,8 +193,6 @@ class PlatformCreatorDeleteView(APIView):
 
 '''Platform'''
 class PlatformListView(APIView):
-    permission_classes = [permissions.AllowAny, ]
-    
     def get(self, request):
         platforms = Platform.objects.all()
         serializer = PlatformListSerializer(platforms, many=True)
@@ -196,7 +200,9 @@ class PlatformListView(APIView):
     
 @method_decorator(csrf_protect, name='dispatch')
 class PlatformCreateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def post(self, request):
         serializer = PlatformCreateSerializer(data=request.data)
@@ -207,7 +213,9 @@ class PlatformCreateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class PlatformUpdateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def put(self, request, pk):
         try:
@@ -224,7 +232,9 @@ class PlatformUpdateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class PlatformDeleteView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def delete(self, request, pk):
         try:
@@ -237,8 +247,6 @@ class PlatformDeleteView(APIView):
 
 '''Tag'''
 class TagListView(APIView):
-    permission_classes = [permissions.AllowAny, ]
-    
     def get(self, request):
         tags = Tag.objects.all()
         serializer = TagListSerializer(tags, many=True)
@@ -246,7 +254,9 @@ class TagListView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class TagCreateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def post(self, request):
         serializer = TagCreateSerializer(data=request.data)
@@ -258,7 +268,9 @@ class TagCreateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class TagUpdateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def put(self, request, pk):
         try:
@@ -275,7 +287,9 @@ class TagUpdateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class TagDeleteView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def delete(self, request, pk):
         try:
@@ -288,8 +302,6 @@ class TagDeleteView(APIView):
 
 '''Comment'''
 class CommentListView(APIView):
-    permission_classes = [permissions.AllowAny, ]
-    
     def get(self, request):
         comments = Comment.objects.all()
         serializer = CommentSerializer(comments, many=True)
@@ -297,7 +309,9 @@ class CommentListView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class CommentCreateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def post(self, request, pk):
         game = GameList.objects.get(pk=pk)
@@ -311,7 +325,9 @@ class CommentCreateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class CommentUpdateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def put(self, request, pk):
         try:
@@ -327,7 +343,9 @@ class CommentUpdateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class CommentDeleteView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def delete(self, request, pk):
         try:
@@ -341,7 +359,7 @@ class CommentDeleteView(APIView):
 '''Comment Raiting'''
 @method_decorator(csrf_protect, name='dispatch')
 class CommentRatingCreateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [permissions.IsAuthenticated, ]
     
     def post(self, request, pk):
         try:
@@ -359,7 +377,7 @@ class CommentRatingCreateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class CommentRaitingUpdateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [permissions.IsAuthenticated, ]
     
     def put(self, request, pk):
         try:
@@ -375,7 +393,7 @@ class CommentRaitingUpdateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class CommentRaitingDeleteView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [permissions.IsAuthenticated, ]
     
     def delete(self, request, pk):
         try:
@@ -398,7 +416,9 @@ class TypeListView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class TypeCreateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def post(self, reqiest):
         serializer = TypeCreateSerializer(data=reqiest.data)
@@ -410,7 +430,9 @@ class TypeCreateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class TypeUpdateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def put(self, request, pk):
         try:
@@ -427,7 +449,9 @@ class TypeUpdateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class TypeDeleteView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def delete(self, request, pk):
         try:
@@ -449,7 +473,9 @@ class CategoryListView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class CategoryCreateView(APIView):
-    permission_classes = [permissions.AllowAny, ] 
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ] 
     
     def post(self, request):
         serializer = CategoryCreateSerializer(data=request.data)
@@ -461,7 +487,9 @@ class CategoryCreateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class CategoryUpdateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def put(self, request, pk):
         try:
@@ -478,6 +506,10 @@ class CategoryUpdateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class CategoryDeleteView(APIView):
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
+    
     def delete(self, request, pk):
         try:
             category_instance = Category.objects.get(pk=pk)
