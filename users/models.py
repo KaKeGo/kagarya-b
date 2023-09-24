@@ -40,6 +40,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=40, unique=True)
     email = models.EmailField(max_length=40, unique=True)
+    roles = models.ManyToManyField('Roles')
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
@@ -63,3 +64,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         
     def user_count(self):
         return User.objects.count_created_users()
+
+class Roles(models.Model):
+    title = models.CharField(max_length=40)
+
+    def __str__(self):
+        return self.title
+    
