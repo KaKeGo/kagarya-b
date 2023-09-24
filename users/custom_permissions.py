@@ -16,7 +16,9 @@ class UserRolePermissionFactory:
         roles = self.roles
         class UserRolePermission(BasePermission):
             def has_permission(self, request, view):
-                has_permission = request.user.roles.filter(title=roles).exists()
+                if request.user.is_anonymous:
+                    raise NoPermission
+                has_permission = any(request.user.roles.filter(title=role).exists() for role in roles)
                 if not has_permission:
                     raise NoPermission
                 return True

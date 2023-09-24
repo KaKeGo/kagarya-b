@@ -43,7 +43,9 @@ class GameListDetailView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class GameListCreateView(APIView):
-    permission_classes = [UserRolePermissionFactory('Ga')(), ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def post(self, request):
         serializer = GameListCreateSerializer(data=request.data)
@@ -57,7 +59,9 @@ class GameListCreateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class GameListUpdateView(APIView):
-    permission_classes = [permissions.AllowAny, ]
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
     
     def put(self, request, slug):
         try:
@@ -73,8 +77,9 @@ class GameListUpdateView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class GameListDeleteView(APIView):
-    permission_classes = [permissions.AllowAny, ]
-    
+    permission_classes = [
+            UserRolePermissionFactory(['Admin', 'GameCreator'])()
+        ]
     def delete(self, request, slug):
         try:
             game_list = GameList.objects.get(slug=slug)

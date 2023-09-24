@@ -41,6 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=40, unique=True)
     email = models.EmailField(max_length=40, unique=True)
     roles = models.ManyToManyField('Roles')
+    is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
