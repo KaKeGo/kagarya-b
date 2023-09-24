@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.sessions.models import Session
 from django.utils import timezone
 
-from .models import User
+from .models import User, Roles
 from .profile_model import (
     Profile, Gender,
 )
@@ -11,6 +11,12 @@ from gameslist.serializers import (
     UserGameEntrySerializer,
 )
 
+
+'''Roles'''
+class RoleListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roles
+        fields = ['id', 'title']
 
 '''Serializer for User'''
 class UserSerializer(serializers.ModelSerializer):
