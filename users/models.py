@@ -1,6 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.utils import timezone
+from django.contrib.auth.models import Permission
 
 
 
@@ -62,4 +63,3 @@ class User(AbstractBaseUser, PermissionsMixin):
         
     def user_count(self):
         return User.objects.count_created_users()
-    
