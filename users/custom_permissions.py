@@ -8,10 +8,16 @@ class NoPermission(APIException):
     status_code = status.HTTP_403_FORBIDDEN
     default_detail = 'Dont have permission to access this view.'
 
-class UserRolePermission(BasePermission):
-    def has_permission(self, request, view):
-        role_title = request.GET.get('roles', '')
-        has_permission = request.user.roles.filter(title=role_title).exists()
-        if not has_permission:
-            raise NoPermission
-        return True
+class UserRolePermissionFactory:
+    def __init__(self, roles):
+        self.roles = roles
+
+    def __call__(self):
+        roles = self.roles
+        class UserRolePermission(BasePermission):
+            def has_permission(self, request, view):
+                has_permission = request.user.roles.filter(title=roles).exists()
+                if not has_permission:
+                    raise NoPermission
+                return True
+        return UserRolePermission

@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions, status
 
-from users.custom_permissions import UserRolePermission
+from users.custom_permissions import UserRolePermissionFactory
 
 from .models import (
     GameList, Type, Category, PlatformCreator, Platform, Tag, Comment, CommentRaiting,
@@ -30,8 +30,6 @@ from .serializers import (
 
 '''Game List'''
 class GamesListView(APIView):
-    permission_classes = [permissions.AllowAny, ]
-    
     def get(self, request):
         game_list = GameList.objects.all()
         serializer = GamesListSerializer(game_list, many=True)
@@ -45,7 +43,7 @@ class GameListDetailView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class GameListCreateView(APIView):
-    permission_classes = [UserRolePermission, ]
+    permission_classes = [UserRolePermissionFactory('Ga')(), ]
     
     def post(self, request):
         serializer = GameListCreateSerializer(data=request.data)
