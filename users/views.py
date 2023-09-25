@@ -9,6 +9,7 @@ from django.utils.html import strip_tags
 from django.core.mail import send_mail
 from django.utils.encoding import force_bytes
 from django.utils import timezone
+from django.http import Http404
 
 from urllib.parse import urlencode
 
@@ -208,3 +209,40 @@ class RoleCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class RoleUpdateView(APIView):
+    permission_classes = [
+        UserRolePermissionFactory(['Admin'])()
+    ]
+
+    def get_object(self, pk):
+        try:
+            return Roles.objects.get(pk=pk)
+        except Roles.DoesNotExist:
+            return Response({'message': 'Role not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, pk):
+        role = self.get_object(pk)
+        serializer = RoleListSerializer(role, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@method_decorator(csrf_protect, name='dispatch')
+class RoleDeleteView(APIView):
+    permission_classes = [
+        UserRolePermissionFactory(['Admin'])()
+    ]
+
+    def get_object(self, pk):
+        try:
+            return Roles.objects.get(pk=pk)
+        except Roles.DoesNotExist:
+            return Response({'message': 'Role not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    def delete(self, request, pk):
+        role = self.get_object(pk)
+        role.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

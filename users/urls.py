@@ -5,7 +5,7 @@ from . views import (
     UserProfileDetailView,
     UserRegisterView, UserLoginView, UserLogoutView,
     ProfileListView,
-    RoleListView, RoleCreateView,
+    RoleListView, RoleCreateView, RoleUpdateView, RoleDeleteView,
 )
 
 
@@ -26,4 +26,6 @@ urlpatterns = [
     #Roles
     path('roles/', RoleListView.as_view(), name='roles_list'),
     path('roles/create/', RoleCreateView.as_view(), name='roles_create'),
+    path('roles/<int:pk>update/', RoleCreateView.as_view(), name='roles_update'),
+    path('roles/<int:pk>/delete/', RoleCreateView.as_view(), name='roles_delete'),
 ]
