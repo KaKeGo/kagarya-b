@@ -17,17 +17,18 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from .models import User
+from .custom_permissions import UserRolePermissionFactory
+
+from .models import User, Roles
 from .profile_model import (
     Profile, Gender
 )
 
 from .serializers import (
     UserCreateSerializer,
-    
     ProfileSerializer,
-    
     GenderSerializer,
+    RoleListSerializer, RoleCreateSerializer,
 )
 
 '''
@@ -187,3 +188,23 @@ class UserLogoutView(APIView):
     def post(self, request, *args, **kwargs):
         logout(request)
         return Response({'success': 'User logged out successfully'})
+
+'''Roles'''
+class RoleListView(APIView):
+    def get(self, request):
+        roles = Roles.objects.all()
+        serializer = RoleListSerializer(roles, many=True)
+        return Response(serializer.data)
+
+@method_decorator(csrf_protect, name='dispatch')
+class RoleCreateView(APIView):
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
+
+    def post(self, request):
+        serializer = RoleCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

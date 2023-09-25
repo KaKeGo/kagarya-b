@@ -18,6 +18,11 @@ class RoleListSerializer(serializers.ModelSerializer):
         model = Roles
         fields = ['id', 'title']
 
+class RoleCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roles
+        fields = ['title']
+
 '''Serializer for User'''
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
