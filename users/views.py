@@ -199,7 +199,7 @@ class RoleListView(APIView):
 @method_decorator(csrf_protect, name='dispatch')
 class RoleCreateView(APIView):
     permission_classes = [
-        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+        UserRolePermissionFactory(['Admin'])()
     ]
 
     def post(self, request):
