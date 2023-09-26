@@ -9,14 +9,12 @@ from django.utils.html import strip_tags
 from django.core.mail import send_mail
 from django.utils.encoding import force_bytes
 from django.utils import timezone
-from django.http import Http404
 
 from urllib.parse import urlencode
 
 from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
 
 from .custom_permissions import UserRolePermissionFactory
 
