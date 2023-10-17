@@ -122,7 +122,7 @@ class RelesedTodayGameView(APIView):
 class RecentlyReleasedGameView(APIView):
     def get(self, request):
         today = timezone.now().date()
-        recently_released_games = GameList.objects.filter(release_date__lt=today).order_by('-release_date')[:10]
+        recently_released_games = GameList.objects.filter(release_date__lt=today).order_by('-release_date')[:5]
         serializer = GamesListSerializer(recently_released_games, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
