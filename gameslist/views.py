@@ -1,5 +1,3 @@
-
-
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
@@ -29,6 +27,9 @@ from .serializers import (
     TypeSerializer, TypeCreateSerializer, TypeUpdateSerializer, 
     CategoryCreateSerializer, CategorySerializer, CategoryUpdateSerializer,
 )
+from .filters import (
+    GameListFilter
+)
 
 
 '''Game List'''
@@ -36,6 +37,12 @@ class GamesListView(APIView):
     def get(self, request):
         paginator = PageNumberPagination()
         game_list = GameList.objects.all()
+
+        filter_class = GameListFilter
+        filterset = filter_class(request.GET, queryset=game_list)
+        if filterset.is_valid():
+            game_list = filterset.qs
+
         context = paginator.paginate_queryset(game_list, request)
         serializer = GamesListSerializer(context, many=True)
         return Response(paginator.get_paginated_response(serializer.data).data, status=status.HTTP_200_OK)
