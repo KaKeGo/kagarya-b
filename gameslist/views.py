@@ -42,6 +42,8 @@ class GamesListView(APIView):
         filterset = filter_class(request.GET, queryset=game_list)
         if filterset.is_valid():
             game_list = filterset.qs
+        else:
+            return Response(filterset.errors, status=status.HTTP_400_BAD_REQUEST)
 
         context = paginator.paginate_queryset(game_list, request)
         serializer = GamesListSerializer(context, many=True)

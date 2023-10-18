@@ -1,13 +1,22 @@
-import django_filters
+from django_filters import rest_framework as filters
+from django.db.models import Q
 
-from .models import GameList
+from .models import (
+    GameList, Category
+)
 
 
-class GameListFilter(django_filters.FilterSet):
-    title = django_filters.CharFilter(lookup_expr='icontains')
+class GameListFilter(filters.FilterSet):
+    title = filters.CharFilter(lookup_expr='icontains')
+    category = filters.CharFilter(method='filter_category')
 
     class Meta:
         model = GameList
         fields = [
-                'title',
+                'title', 'category'
             ]
+    def filter_category(self, queryset, name, value):
+        categories = value.split('&')
+        for category in categories:
+            queryset = queryset.filter(category__name__icontains=category.strip())
+        return queryset
