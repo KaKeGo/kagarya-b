@@ -1,3 +1,5 @@
+
+
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
@@ -9,6 +11,7 @@ from django.db.models.functions import Coalesce
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions, status
+from rest_framework.pagination import PageNumberPagination
 
 from users.custom_permissions import UserRolePermissionFactory
 
@@ -31,9 +34,11 @@ from .serializers import (
 '''Game List'''
 class GamesListView(APIView):
     def get(self, request):
+        paginator = PageNumberPagination()
         game_list = GameList.objects.all()
-        serializer = GamesListSerializer(game_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        context = paginator.paginate_queryset(game_list, request)
+        serializer = GamesListSerializer(context, many=True)
+        return Response(paginator.get_paginated_response(serializer.data).data, status=status.HTTP_200_OK)
 
 class GameListDetailView(APIView):
     def get(self, request, slug):
