@@ -86,10 +86,10 @@ class UserGameEntry(models.Model):
 '''Game List'''
 class GameList(models.Model):
     added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    game_version = models.CharField(max_length=30, choices=GAME_VERSION)
-    game_mode = models.CharField(max_length=30, choices=GAME_MODE)
+    game_version = models.CharField(max_length=30, choices=GAME_VERSION, null=True, blank=True)
+    game_mode = models.CharField(max_length=30, choices=GAME_MODE, null=True, blank=True)
     title = models.CharField(max_length=200, unique=True)
-    body = models.TextField()
+    body = models.TextField(blank=True, null=True)
     trailer = models.URLField(blank=True, null=True)
     cover = models.ImageField(upload_to='game/cover/', null=True, blank=True)
     game_type = models.ManyToManyField('Type', blank=True)
@@ -100,7 +100,7 @@ class GameList(models.Model):
     comments = models.ManyToManyField('Comment', blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
     release_date = models.DateField(blank=True, null=True)
-    status = models.CharField(max_length=100, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='pending')
     game_slug = models.SlugField(unique=True, null=True, blank=True)
     
     def __str__(self):
