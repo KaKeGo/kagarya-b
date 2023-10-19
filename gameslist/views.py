@@ -106,7 +106,7 @@ class GameListDeleteView(APIView):
 '''Games event list'''
 class RecentlyAddedGamesView(APIView):
     def get(self, request):
-        games = GameList.objects.order_by('-id')[:5]
+        games = GameList.objects.order_by('-id')[:10]
         serializer = GamesListSerializer(games, many=True)
         return Response(serializer.data)
 
