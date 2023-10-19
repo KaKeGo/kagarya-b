@@ -113,6 +113,9 @@ class GameList(models.Model):
             return round(avg_rating, 2)
         return 0
     
+    class Meta:
+        ordering = ['-release_date']
+    
 '''Category'''
 class Category(models.Model):
     name = models.CharField(max_length=100)
