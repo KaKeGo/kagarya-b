@@ -214,13 +214,19 @@ CSRF_COOKIE_NAME = 'kejki'
 
 CORS_ALLOWED_ORIGINS = [
     'https://www.kagarya.com',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
     'https://www.kagarya.com',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
 ]
 CSRF_TRUSTED_ORIGINS = [
     'https://www.kagarya.com',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
 ]
 
 django_heroku.settings(locals())
