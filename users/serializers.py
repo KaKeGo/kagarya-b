@@ -3,10 +3,25 @@ from rest_framework import serializers
 from django.contrib.sessions.models import Session
 from django.utils import timezone
 
-from .models import (
-    User, Profile, Gender
+from .models import User, Roles
+from .profile_model import (
+    Profile, Gender,
+)
+from gameslist.serializers import (
+    UserGameEntrySerializer,
 )
 
+
+'''Roles'''
+class RoleListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roles
+        fields = ['id', 'title']
+
+class RoleCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roles
+        fields = ['title']
 
 '''Serializer for User'''
 class UserSerializer(serializers.ModelSerializer):
@@ -78,12 +93,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     gender = GenderSerializer()
     online_status = serializers.SerializerMethodField()
+    game_list = UserGameEntrySerializer(many=True, read_only=True)
         
     class Meta:
         model = Profile
         fields = [
             'id', 'get_username', 'user', 'avatar', 'about', 
-            'motto', 'gender', 'slug', 'online_status'
+            'motto', 'gender', 'slug', 'online_status', 'game_list',
+            'total_games_added', 'games_by_status_count',
             ]
         read_only_fields = ['slug']
         

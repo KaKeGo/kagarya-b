@@ -1,13 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.utils import timezone
-from django_countries.fields import CountryField
+from django.contrib.auth.models import Permission
 
-# Create your models here.
 
-'''
-CustomUser model and UserManager
-'''
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -18,8 +14,8 @@ class UserManager(BaseUserManager):
         
         email = self.normalize_email(email)
         user = self.model(
-                username=username, 
-                email=email, 
+                username=username,
+                email=email,
                 **extra_fields
             )
         user.set_password(password)
@@ -44,6 +40,8 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=40, unique=True)
     email = models.EmailField(max_length=40, unique=True)
+    roles = models.ManyToManyField('Roles')
+    is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
@@ -56,7 +54,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['username']
     
     def __str__(self):
-        return f'{self.username} | {self.email}'
+        if self.is_active:
+            return self.username
+        else:
+            return 'User Deleted'
     
     class Meta:
         verbose_name = 'User'
@@ -65,31 +66,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def user_count(self):
         return User.objects.count_created_users()
 
-'''
-Profile for users
-'''
+class Roles(models.Model):
+    title = models.CharField(max_length=40)
 
-def get_default_avatar():
-    '''Default avatar for users'''
-    return 'default/avatar/avatar.jpg'
-
-class Gender(models.Model):
-    name = models.CharField(max_length=10, unique=True)
+    def __str__(self):
+        return self.title
     
-    def __str__(self):
-        return self.name
-
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='avatars/', default=get_default_avatar)
-    about = models.TextField(blank=True, null=True)
-    motto = models.CharField(max_length=80, blank=True, null=True)
-    gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, null=True, blank=True)
-    country = CountryField(blank=True, null=True)
-    slug = models.SlugField(unique=True, blank=True)
-
-    def __str__(self):
-        return f'Profile for {self.user.username}'
-
-    def get_username(self):
-        return self.user.username

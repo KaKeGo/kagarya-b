@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aktywacja konta</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 20px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <p>Welcome, {{ username }}</p>
+    <p>
+        Thank you for registering for our app. 
+        We're excited that you've joined us!
+    </p>
+    <p>
+        To activate your account, click the button below:
+    </p>
+    <a href="{{ activation_link }}" class="button">Activate</a>
+    <p>
+        If the button does not work, copy and paste the link below into your browser:
+    </p>
+    <p>{{ activation_link }}</p>
+    <p>Greetings,</p>
+    <p>KaGaRya team,</p>
+</body>
+</html>

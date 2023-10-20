@@ -3,7 +3,10 @@ from django.dispatch import receiver
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 
-from .models import Profile, Gender
+from .models import Roles
+from .profile_model import (
+    Profile, Gender,
+)
 
 
 User = get_user_model()
@@ -40,3 +43,12 @@ def slug_save(sender, instance, **kwargs):
             counter += 1
         
         instance.slug = slug
+
+@receiver(post_save, sender=User)
+def create_roles(sender, instance, created, **kwargs):
+    if created and not Roles.objects.exists():
+        roles = ['Admin', 'Staff', 'GameCreator']
+        for role_name in roles:
+            Roles.objects.get_or_create(
+                title=role_name
+            )

@@ -1,4 +1,4 @@
-[![Logo projektu](https://files.fm/thumb.php?i=5f4yxt8hm)](https://api.kagarya.com/)
+[![Logo projektu](https://files.fm/thumb.php?i=5f4yxt8hm)](https://aki.kagarya.com/)
 
 For the time being, the website has a different look than the target design 
 
@@ -18,7 +18,7 @@ Kagarya is the place where you will find information on topics ranging from game
 <hr />
 ## Api documentation
 
- [Endpoints](https://api.kagarya.com)
+ [Endpoints](https://aki.kagarya.com)
  [Not updated yet]
  
 <hr />

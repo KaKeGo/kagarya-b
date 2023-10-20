@@ -30,7 +30,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1',]
 
 # Application definition
 
@@ -46,15 +46,27 @@ INSTALLED_APPS = [
     'home',
     'users.apps.UsersConfig',
     'todo',
+    'animelist',
+    'mangalist',
+    'filmslist',
+    'bookslist',
+    'gameslist',
     
     #Third apps
     'rest_framework',
+    'django_filters',
     'rest_framework.authtoken',
     'corsheaders',
     'storages',
     'channels',
     'django_countries',
+    'guardian',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -164,6 +176,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 REST_FRAMEWORK = {
@@ -171,9 +190,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
 }
 
 if DEBUG is False:
@@ -191,7 +209,8 @@ SESSION_COOKIE_SAMESITE = 'None'
 
 CSRF_COOKIE_SECURE = True
 
-# CSRF_COOKIE_NAME = 'my_csrftoken'
+SESSION_COOKIE_NAME = "kagarion"
+CSRF_COOKIE_NAME = 'kejki'
 
 CORS_ALLOWED_ORIGINS = [
     'https://www.kagarya.com',
