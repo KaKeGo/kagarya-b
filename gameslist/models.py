@@ -57,6 +57,9 @@ def generate_random_slug(length=6):
     characters = string.ascii_letters + string.digits
     return ''.join(random.choice(characters) for _ in range(length))
 
+def get_default_game_avatar():
+    '''Default avatar for Game'''
+    return 'default/game/default/defaultgame.jpg'
 
 '''UserGameEntry'''
 class UserGameEntry(models.Model):
@@ -91,7 +94,7 @@ class GameList(models.Model):
     title = models.CharField(max_length=200, unique=True)
     body = models.TextField(blank=True, null=True)
     trailer = models.URLField(blank=True, null=True)
-    cover = models.ImageField(upload_to='game/cover/', null=True, blank=True)
+    cover = models.ImageField(upload_to='game/cover/', default=get_default_game_avatar, null=True, blank=True)
     game_type = models.ManyToManyField('Type', blank=True)
     category = models.ManyToManyField('Category', blank=True)
     developer = models.ForeignKey('GameDeveloper', on_delete=models.PROTECT, blank=True, null=True, related_name='game_developer')
