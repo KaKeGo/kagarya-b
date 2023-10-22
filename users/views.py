@@ -176,7 +176,7 @@ class UserLogoutView(APIView):
     
     def post(self, request, *args, **kwargs):
         logout(request)
-        return Response({'success': 'User logged out successfully'})
+        return Response({'success': 'User logged out successfully'}, status=status.HTTP_200_OK)
 
 '''Roles'''
 class RoleListView(APIView):
