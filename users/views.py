@@ -141,15 +141,15 @@ class ActivateAccountView(APIView):
             
         if user is not None and default_token_generator.check_token(user, token):
             if user.is_active:
-                return redirect('http://localhost:3000/accounts/activated')
+                return redirect('https://www.kagarya.com/accounts/activated')
                 # return Response({'error': 'Account is already activated'}, status=status.HTTP_400_BAD_REQUEST)
                 
             user.is_active = True
             user.save()
-            return redirect('http://localhost:3000/accounts/activate/success')
+            return redirect('https://www.kagarya.com/accounts/activate/success')
             # return Response({'success': 'Account activated successfully'}, status=status.HTTP_200_OK)
         else:
-            return redirect('http://localhost:3000/accounts/activate/error')
+            return redirect('https://www.kagarya.com/accounts/activate/error')
             # return Response({'error': 'Invalid activation link'}, status=status.HTTP_400_BAD_REQUEST)
 
 @method_decorator(csrf_protect, name='dispatch')
