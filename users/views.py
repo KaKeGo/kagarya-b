@@ -169,10 +169,10 @@ class UserLoginView(APIView):
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
-@method_decorator(csrf_protect, name='dispatch')
+# @method_decorator(csrf_protect, name='dispatch')
 class UserLogoutView(APIView):
     '''Logout User'''
-    # permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, )
     
     def post(self, request, *args, **kwargs):
         logout(request)
