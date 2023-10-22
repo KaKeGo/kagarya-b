@@ -204,13 +204,14 @@ if DEBUG is False:
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 3600
 SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = False
 SESSION_COOKIE_SAMESITE = None
 
 CSRF_COOKIE_SECURE = True
 
-SESSION_COOKIE_NAME = "kagarion"
+# SESSION_COOKIE_NAME = "kagarion"
 CSRF_COOKIE_NAME = 'kejki'
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     'https://www.kagarya.com',
@@ -218,7 +219,6 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
 ]
-CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
     'https://www.kagarya.com',
     'https://aki.kagarya.com',
