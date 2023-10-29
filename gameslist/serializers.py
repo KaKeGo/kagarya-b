@@ -242,17 +242,10 @@ class GamesListSerializer(serializers.ModelSerializer):
         ]
 
 class GameListCreateSerializer(serializers.ModelSerializer):
-    cover = serializers.ImageField(validators=[
-            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png']),
-        ], required=False)
-    trailer = serializers.URLField(validators=[URLValidator()], required=False)
-    
     class Meta:
         model = GameList
         fields = [
-            'id', 'cover', 'game_version', 'trailer', 'title', 'body', 'game_type',
-            'category', 'average_rating', 'developer', 'platforms',
-            'comments', 'tags', 'release_date',
+            'title',
         ]
         
     def validate_title(self, value):
@@ -262,40 +255,18 @@ class GameListCreateSerializer(serializers.ModelSerializer):
         if existing_instance:
             raise serializers.ValidationError('Title must be unique. This title already exists.')
         
-        if len(value) <0:
+        if len(value) <= 2:
             raise serializers.ValidationError('Title should be at least 2 characters')
-        elif len(value) >200:
-            raise serializers.ValidationError('Title should be no more than 200 characters')
+        elif len(value) >= 40:
+            raise serializers.ValidationError('Title should be no more than 40 characters')
         
         return value
     
-    def validate_body(self, value):
-        if len(value) < 30:
-            raise serializers.ValidationError('Body should be at least 30 characters')
-        elif len(value) > 1000:
-            raise serializers.ValidationError('Body should be no more than 1000 characters')
-        
-        return value
-    
-    def validate_cover(self, value):
-        image = Image.open(value)
-        width, height = image.size
-        if width > 800 or height > 800:
-            raise serializers.ValidationError('Image dimensions should be no more than 800x800 pixels')
-        
-        max_image_size = 20 * 1024 * 1024
-        if value.size > max_image_size:
-            raise serializers.ValidationError('Image file size should be no more than 20mb')
-        
-        return value
-    
-    def validate_trailer(self, value):
-        url_validator = URLValidator()
-        try:
-            url_validator(value)
-        except ValidationError:
-            raise serializers.ValidationError('Invalid trailer URL')
-        return value
+    def create(self, validated_data):
+        user = self.context['request'].user
+        validated_data['added_by'] = user
+        game_list = GameList.objects.create(**validated_data)
+        return game_list
 
 class GameUpdateSerializer(serializers.ModelSerializer):
     class Meta:

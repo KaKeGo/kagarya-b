@@ -34,9 +34,12 @@ from .filters import (
 
 '''Game List'''
 class GamesListView(APIView):
-    def get(self, request):
+    def get(self, request, game_status=None):
         paginator = PageNumberPagination()
-        game_list = GameList.objects.all()
+        if status:
+            game_list = GameList.objects.filter(status=game_status)
+        else:
+            return Response({'error': 'status is required'})
 
         filter_class = GameListFilter
         filterset = filter_class(request.GET, queryset=game_list)
@@ -62,9 +65,9 @@ class GameListCreateView(APIView):
     ]
     
     def post(self, request):
-        serializer = GameListCreateSerializer(data=request.data)
+        serializer = GameListCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            game_list = serializer.save()
+            game_list = serializer.save(added_by=request.user)
             
             game_list.game_slug = slugify(f'{game_list.id}/{game_list.title}')
             game_list.save()
@@ -106,7 +109,7 @@ class GameListDeleteView(APIView):
 '''Games event list'''
 class RecentlyAddedGamesView(APIView):
     def get(self, request):
-        games = GameList.objects.order_by('-id')[:10]
+        games = GameList.objects.filter(status='public').order_by('-id')[:10]
         serializer = GamesListSerializer(games, many=True)
         return Response(serializer.data)
 

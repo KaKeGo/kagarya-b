@@ -19,7 +19,7 @@ app_name = 'gamelist'
 
 urlpatterns = [
     # GameList
-    path('', GamesListView.as_view(), name='game_list'),
+    path('list/<str:game_status>/', GamesListView.as_view(), name='game_list_by_status'),
     path('create/', GameListCreateView.as_view(), name='game_create'),
     path('detail/<slug>/', GameListDetailView.as_view(), name='game_detail'),
     path('<slug>/update/', GameListUpdateView.as_view(), name='game_update'),
