@@ -54,7 +54,7 @@ class GamesListView(APIView):
 
 class GameListDetailView(APIView):
     def get(self, request, slug):
-        game_list = get_object_or_404(GameList, slug=slug)
+        game_list = get_object_or_404(GameList, game_slug=slug)
         serializer = GamesListSerializer(game_list)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

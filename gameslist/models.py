@@ -61,6 +61,11 @@ def get_default_game_avatar():
     '''Default avatar for Game'''
     return 'default/game/default/defaultgame.jpg'
 
+def get_default_founder_avatar():
+    '''Default avatar for founder'''
+    return 'default/avatar/founder.jpg'
+
+
 '''UserGameEntry'''
 class UserGameEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -86,11 +91,19 @@ class UserGameEntry(models.Model):
         super().save(*args, **kwargs)
         self.user.profile.game_list.add(self)
 
+class GameReport(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    game = models.ForeignKey('GameList', on_delete=models.CASCADE)
+    reated_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'game')
+
 '''Game List'''
 class GameList(models.Model):
     added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     game_version = models.CharField(max_length=30, choices=GAME_VERSION, null=True, blank=True)
-    game_mode = models.CharField(max_length=30, choices=GAME_MODE, null=True, blank=True)
+    game_mode = models.ManyToManyField('GameMode')
     title = models.CharField(max_length=200, unique=True)
     body = models.TextField(blank=True, null=True)
     trailer = models.URLField(blank=True, null=True)
@@ -104,11 +117,15 @@ class GameList(models.Model):
     tags = models.ManyToManyField('Tag', blank=True)
     release_date = models.DateField(blank=True, null=True)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='pending')
+    
     game_slug = models.SlugField(unique=True, null=True, blank=True)
     
     def __str__(self):
         return self.title
     
+    def report_count(self):
+        return self.gamereport_set.count()
+
     @property
     def average_rating(self):
         avg_rating = UserGameEntry.objects.filter(games=self).aggregate(Avg('rating'))['rating__avg']
@@ -118,6 +135,13 @@ class GameList(models.Model):
     
     class Meta:
         ordering = ['-release_date']
+
+'''Game Mode'''
+class GameMode(models.Model):
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
     
 '''Category'''
 class Category(models.Model):
@@ -136,10 +160,10 @@ class Type(models.Model):
 '''Game Developers'''
 class GameDeveloper(models.Model):
     name = models.CharField(max_length=200)
-    logo = models.ImageField(upload_to='company_logo/')
+    logo = models.ImageField(upload_to='company_logo/', default=get_default_founder_avatar)
     description = models.TextField(blank=True, null=True)
     founders = models.ManyToManyField('Founder', blank=True)
-    established_date = models.DateField()
+    established_date = models.DateField(unique=True, blank=True)
     developer_slug = models.SlugField(unique=True, blank=True)
     
     def __str__(self):
@@ -150,9 +174,6 @@ class GameDeveloper(models.Model):
             self.slug = slugify(f'{self.name}')
         super().save(*args, **kwargs)
         
-def get_default_founder_avatar():
-    return 'default/avatar/founder.jpg'
-
 '''Game Publisher'''
 class GamePublisher(GameDeveloper):
     pass
