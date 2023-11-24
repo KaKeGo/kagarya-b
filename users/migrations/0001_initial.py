@@ -14,7 +14,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('gameslist', '0001_initial'),
-        ('auth', '0002_alter_group_name_alter_permission_name_and_more'),
     ]
 
     operations = [
