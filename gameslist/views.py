@@ -13,6 +13,8 @@ from rest_framework.pagination import PageNumberPagination
 
 from users.custom_permissions import UserRolePermissionFactory
 
+from .paginator import CustomPageNumberPagination
+
 from .models import (
     GameList, Type, Category, PlatformCreator, Platform, Tag, Comment, CommentRaiting,
 )
@@ -35,7 +37,7 @@ from .filters import (
 '''Game List'''
 class GamesListView(APIView):
     def get(self, request, game_status=None):
-        paginator = PageNumberPagination()
+        paginator = CustomPageNumberPagination()
         if status:
             game_list = GameList.objects.filter(status=game_status)
         else:

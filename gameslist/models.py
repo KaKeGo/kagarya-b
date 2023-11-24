@@ -103,7 +103,7 @@ class GameReport(models.Model):
 class GameList(models.Model):
     added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     game_version = models.CharField(max_length=30, choices=GAME_VERSION, null=True, blank=True)
-    game_mode = models.ManyToManyField('GameMode')
+    game_mode = models.ManyToManyField('GameMode', blank=True)
     title = models.CharField(max_length=200, unique=True)
     body = models.TextField(blank=True, null=True)
     trailer = models.URLField(blank=True, null=True)
