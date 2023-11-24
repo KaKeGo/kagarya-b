@@ -257,7 +257,7 @@ class GameListCreateSerializer(serializers.ModelSerializer):
         
         if len(value) <= 2:
             raise serializers.ValidationError('Title should be at least 2 characters')
-        elif len(value) >= 40:
+        elif len(value) >= 200:
             raise serializers.ValidationError('Title should be no more than 40 characters')
         
         return value
