@@ -10,6 +10,8 @@ class CustomPageNumberPagination(PageNumberPagination):
                 'previous': self.get_previous_link(),
                 'first': self.request.build_absolute_uri('?page=1'),
                 'last': self.request.build_absolute_uri(f'?page={self.page.paginator.num_pages}'),
+                'current': self.request.build_absolute_uri(f'?page={self.page.number}'),
+                'total': self.request.build_absolute_uri(f'?page={self.page.paginator.num_pages}'),
             },
             'current_page': self.page.number,
             'total_pages': self.page.paginator.num_pages,

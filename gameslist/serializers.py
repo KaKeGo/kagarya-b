@@ -238,7 +238,7 @@ class GamesListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'cover', 'game_version', 'game_mode', 'trailer', 'title', 'body', 
             'game_type', 'category', 'average_rating', 'developer', 'platforms',
-            'comments', 'tags', 'release_date', 'game_slug',
+            'comments', 'tags', 'release_date', 'game_slug', 'status',
         ]
 
 class GameListCreateSerializer(serializers.ModelSerializer):
@@ -261,7 +261,7 @@ class GameListCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Title should be no more than 40 characters')
         
         return value
-    
+
     def create(self, validated_data):
         user = self.context['request'].user
         validated_data['added_by'] = user

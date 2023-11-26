@@ -163,15 +163,15 @@ class GameDeveloper(models.Model):
     logo = models.ImageField(upload_to='company_logo/', default=get_default_founder_avatar)
     description = models.TextField(blank=True, null=True)
     founders = models.ManyToManyField('Founder', blank=True)
-    established_date = models.DateField(unique=True, blank=True)
+    established_date = models.DateField(unique=True, null=True, blank=True)
     developer_slug = models.SlugField(unique=True, blank=True)
     
     def __str__(self):
         return self.name
     
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f'{self.name}')
+        if not self.developer_slug:
+            self.developer_slug = slugify(f'{self.name}')
         super().save(*args, **kwargs)
         
 '''Game Publisher'''
@@ -190,8 +190,8 @@ class Founder(models.Model):
         return f'{self.first_name} {self.last_name}'
     
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f'{self.first_name}-{self.last_name}')
+        if not self.founder_slug:
+            self.founder_slug = slugify(f'{self.first_name}-{self.last_name}')
         super().save(*args, **kwargs)
 
 '''Comments'''
@@ -244,9 +244,9 @@ class Platform(models.Model):
         return self.name
     
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.platform_slug:
             random_slug = generate_random_slug()
-            self.slug = slugify(f'{self.name}-{random_slug}')
+            self.platform_slug = slugify(f'{self.name}-{random_slug}')
         super().save(*args, **kwargs)
 
 class PlatformCreator(models.Model):
@@ -260,6 +260,6 @@ class PlatformCreator(models.Model):
         return f'{self.first_name} {self.last_name}'
     
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f'{self.first_name}-{self.last_name}')
+        if not self.platform_creator_slug:
+            self.platform_creator_slug = slugify(f'{self.first_name}-{self.last_name}')
         super().save(*args, **kwargs)
