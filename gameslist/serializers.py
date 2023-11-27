@@ -8,7 +8,8 @@ from PIL import Image
 
 from .models import (
     GameList, Type, Category, UserGameEntry, GameDeveloper, Founder,
-    Comment, CommentRaiting, Platform, PlatformCreator, Tag,
+    Comment, CommentRaiting, Platform, PlatformCreator, Tag, GameMode,
+    HardwareRequirements,
 )
 
 User = get_user_model()
@@ -223,22 +224,41 @@ class TypeUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
         fields = ['name']
-               
+
+'''Game Mode'''
+class GameModeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GameMode
+        fields = '__all__'
+
+'''HardwareRequirements'''
+class HardwareRequirementsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HardwareRequirements
+        fields = '__all__'
+
 '''Game Serializer'''
 class GamesListSerializer(serializers.ModelSerializer):
+    game_mode = serializers.StringRelatedField(many=True)
     game_type = serializers.StringRelatedField(many=True)
     category = serializers.StringRelatedField(many=True)
+    added_by = serializers.StringRelatedField()
     developer = serializers.StringRelatedField()
+    game_publisher = serializers.StringRelatedField()
     platforms = serializers.StringRelatedField(many=True)
     comments = CommentSerializer(many=True)
     tags = serializers.StringRelatedField(many=True)
+    minimum_requirements = HardwareRequirementsSerializer()
+    recommended_requirements = HardwareRequirementsSerializer()
+    highest_requirements = HardwareRequirementsSerializer()
     
     class Meta:
         model = GameList
         fields = [
             'id', 'cover', 'game_version', 'game_mode', 'trailer', 'title', 'body', 
-            'game_type', 'category', 'average_rating', 'developer', 'platforms',
-            'comments', 'tags', 'release_date', 'game_slug', 'status',
+            'game_type', 'category', 'average_rating', 'developer', 'game_publisher', 'platforms',
+            'comments', 'tags', 'release_date', 'game_slug', 'status', 'added_by',
+            'minimum_requirements', 'recommended_requirements', 'highest_requirements',
         ]
 
 class GameListCreateSerializer(serializers.ModelSerializer):

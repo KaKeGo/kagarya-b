@@ -118,6 +118,10 @@ class GameList(models.Model):
     release_date = models.DateField(blank=True, null=True)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='pending')
     
+    minimum_requirements = models.ForeignKey('HardwareRequirements', on_delete=models.PROTECT, related_name='games_with_min_req', null=True, blank=True)
+    recommended_requirements = models.ForeignKey('HardwareRequirements', on_delete=models.PROTECT, related_name='games_with_rec_req', null=True, blank=True)
+    highest_requirements = models.ForeignKey('HardwareRequirements', on_delete=models.PROTECT, related_name='games_with_high_req', null=True, blank=True)
+
     game_slug = models.SlugField(unique=True, null=True, blank=True)
     
     def __str__(self):
@@ -135,6 +139,27 @@ class GameList(models.Model):
     
     class Meta:
         ordering = ['-release_date']
+
+'''HardwareRequirements'''
+class HardwareRequirements(models.Model):
+    os = models.CharField(max_length=100, null=True, blank=True)
+    cpu = models.CharField(max_length=100, null=True, blank=True)
+    ram = models.IntegerField(null=True, blank=True)
+    gpu = models.CharField(max_length=100, null=True, blank=True)
+    direct_x = models.CharField(max_length=100, null=True, blank=True)
+    storage = models.IntegerField(null=True, blank=True)
+    sound_card = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        games_min = [game.title for game in self.games_with_min_req.all()]
+        games_rec = [game.title for game in self.games_with_rec_req.all()]
+        games_high = [game.title for game in self.games_with_high_req.all()]
+
+        min_text = f"Min requirements for {', '.join(games_min)}" if games_min else ""
+        rec_text = f"Rec requirements for {', '.join(games_rec)}" if games_rec else ""
+        high_text = f"High requirements for {', '.join(games_high)}" if games_high else ""
+
+        return "; ".join(text for text in [min_text, rec_text, high_text] if text)
 
 '''Game Mode'''
 class GameMode(models.Model):
