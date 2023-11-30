@@ -333,7 +333,7 @@ class GameUpdateSerializer(serializers.ModelSerializer):
         if value.size > max_image_size:
             raise serializers.ValidationError('Image file size should be no more than 20mb')
         
-        max_size = (800, 800)
+        max_size = (500, 500)
         image.thumbnail(max_size, Image.ANTIALIAS)
 
         output = BytesIO()
