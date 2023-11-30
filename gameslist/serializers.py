@@ -1,9 +1,12 @@
 from rest_framework import serializers
+
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator, FileExtensionValidator
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
 
 from PIL import Image
+from io import BytesIO
 
 
 from .models import (
@@ -322,13 +325,24 @@ class GameUpdateSerializer(serializers.ModelSerializer):
     def validate_cover(self, value):
         image = Image.open(value)
         width, height = image.size
+        max_image_size = 20 * 1024 * 1024
+
         if width > 800 or height > 800:
             raise serializers.ValidationError('Image dimensions should be no more than 800x800 pixels')
         
-        max_image_size = 20 * 1024 * 1024
         if value.size > max_image_size:
             raise serializers.ValidationError('Image file size should be no more than 20mb')
         
+        max_size = (800, 800)
+        image.thumbnail(max_size, Image.ANTIALIAS)
+
+        output = BytesIO()
+        image = image.convert('RGB')
+        image.save(output, format='JPEG')
+        output.seek(0)
+
+        value = ContentFile(output.read(), name=value.name)
+
         return value
     
     def validate_trailer(self, value):
