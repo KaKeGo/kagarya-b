@@ -109,7 +109,7 @@ class GameList(models.Model):
     trailer = models.URLField(blank=True, null=True)
     cover = models.ImageField(upload_to='game/cover/', default=get_default_game_avatar, null=True, blank=True)
     game_type = models.ManyToManyField('Type', blank=True)
-    category = models.ManyToManyField('Category', blank=True)
+    category = models.ForeignKey('Category', blank=True, null=True, on_delete=models.PROTECT)
     developer = models.ForeignKey('GameDeveloper', on_delete=models.PROTECT, blank=True, null=True, related_name='game_developer')
     game_publisher = models.ForeignKey('GamePublisher', on_delete=models.PROTECT, null=True, blank=True, related_name='game_publisher')
     platforms = models.ManyToManyField('Platform', blank=True)
@@ -117,6 +117,7 @@ class GameList(models.Model):
     tags = models.ManyToManyField('Tag', blank=True)
     release_date = models.DateField(blank=True, null=True)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='pending')
+    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='update_games_user')
     
     minimum_requirements = models.ForeignKey('HardwareRequirements', on_delete=models.PROTECT, related_name='games_with_min_req', null=True, blank=True)
     recommended_requirements = models.ForeignKey('HardwareRequirements', on_delete=models.PROTECT, related_name='games_with_rec_req', null=True, blank=True)

@@ -17,7 +17,7 @@ from .models import (
 
 User = get_user_model()
 
-'''Tag'''
+'''...Tag'''
 class TagListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -33,7 +33,7 @@ class TagUpdateSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ['name']
 
-'''Platform Creators'''
+'''...Platform Creators'''
 class PlatformCreatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlatformCreator
@@ -62,7 +62,7 @@ class PlatformCreatorUpdateSerializer(serializers.ModelSerializer):
         model = PlatformCreator
         fields = ['first_name', 'last_name', 'bio', 'photo']
 
-'''Platform'''
+'''...Platform'''
 class PlatformListSerializer(serializers.ModelSerializer):
     creator = PlatformCreatorSerializer(many=True)
     
@@ -99,7 +99,7 @@ class PlatformUpdateSerializer(serializers.ModelSerializer):
         model = Platform
         fields = ['name', 'description', 'logo', 'creator', 'date_established']
 
-'''Comments Raiting'''
+'''...Comments Raiting'''
 class CommentRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommentRaiting
@@ -135,7 +135,7 @@ class CommentRaitingUpdateSerializer(serializers.ModelSerializer):
         model = CommentRaiting
         fields = ['comment_rating']
 
-'''Comments'''
+'''...Comments'''
 class CommentSerializer(serializers.ModelSerializer):
     ratings = serializers.StringRelatedField(many=True, read_only=True)
     game = serializers.StringRelatedField()
@@ -166,13 +166,13 @@ class CommentUpdateSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['text']
 
-'''Founders'''
+'''...Founders'''
 class Founder(serializers.ModelSerializer):
     class Meta:
         model = Founder
         fields = '__all__'
 
-'''Game Developer'''
+'''...Developer'''
 class GameDeveloperSerializer(serializers.ModelSerializer):
     founders = serializers.StringRelatedField(many=True)
     
@@ -180,7 +180,7 @@ class GameDeveloperSerializer(serializers.ModelSerializer):
         model = GameDeveloper
         fields = '__all__'
         
-'''Game Category'''
+'''...Category'''
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -204,7 +204,7 @@ class CategoryUpdateSerializer(serializers.ModelSerializer):
         model = Category
         fields = ['name']
 
-'''Game Type'''
+'''...Game Type'''
 class TypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
@@ -228,24 +228,25 @@ class TypeUpdateSerializer(serializers.ModelSerializer):
         model = Type
         fields = ['name']
 
-'''Game Mode'''
+'''...Game Mode'''
 class GameModeSerializer(serializers.ModelSerializer):
     class Meta:
         model = GameMode
         fields = '__all__'
 
-'''HardwareRequirements'''
+'''...HardwareRequirements'''
 class HardwareRequirementsSerializer(serializers.ModelSerializer):
     class Meta:
         model = HardwareRequirements
         fields = '__all__'
 
-'''Game Serializer'''
+'''...Game Serializer'''
 class GamesListSerializer(serializers.ModelSerializer):
     game_mode = serializers.StringRelatedField(many=True)
     game_type = serializers.StringRelatedField(many=True)
-    category = serializers.StringRelatedField(many=True)
+    category = serializers.StringRelatedField()
     added_by = serializers.StringRelatedField()
+    updated_by = serializers.StringRelatedField()
     developer = serializers.StringRelatedField()
     game_publisher = serializers.StringRelatedField()
     platforms = serializers.StringRelatedField(many=True)
@@ -260,7 +261,7 @@ class GamesListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'cover', 'game_version', 'game_mode', 'trailer', 'title', 'body', 
             'game_type', 'category', 'average_rating', 'developer', 'game_publisher', 'platforms',
-            'comments', 'tags', 'release_date', 'game_slug', 'status', 'added_by',
+            'comments', 'tags', 'release_date', 'game_slug', 'status', 'added_by', 'updated_by',
             'minimum_requirements', 'recommended_requirements', 'highest_requirements',
         ]
 
@@ -297,8 +298,9 @@ class GameUpdateSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'cover', 'game_version', 'trailer', 'title', 'body', 'game_type',
             'category', 'average_rating', 'developer', 'platforms',
-            'comments', 'tags', 'release_date',
+            'comments', 'tags', 'release_date', 'updated_by',
         ]
+        read_only_fields = ['updated_by']
     
     def validate_title(self, value):
         existing_instance = GameList.objects.filter(title=value).exclude(
@@ -352,6 +354,12 @@ class GameUpdateSerializer(serializers.ModelSerializer):
         except ValidationError:
             raise serializers.ValidationError('Invalid trailer URL')
         return value
+    
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        instance.updated_by = self.context['request'].user
+        instance.save()
+        return instance
 
 '''User Game List'''
 class UserGameEntrySerializer(serializers.ModelSerializer):

@@ -84,11 +84,11 @@ class GameListUpdateView(APIView):
     
     def put(self, request, slug):
         try:
-            game = GameList.objects.get(slug=slug)
+            game = GameList.objects.get(game_slug=slug)
         except GameList.DoesNotExist:
             return Response({'message': 'Game not found'}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = GameUpdateSerializer(game, data=request.data)
+        serializer = GameUpdateSerializer(game, data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -101,7 +101,7 @@ class GameListDeleteView(APIView):
         ]
     def delete(self, request, slug):
         try:
-            game_list = GameList.objects.get(slug=slug)
+            game_list = GameList.objects.get(game_slug=slug)
         except GameList.DoesNotExist:
             return Response({'message': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
         
@@ -481,7 +481,7 @@ class TypeDeleteView(APIView):
         type_instance.delete()
         return Response({'message': 'Type deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
-'''Category'''
+'''..Category'''
 class CategoryListView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
