@@ -194,7 +194,6 @@ class GameDeveloperCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Name must be at most 30 characters.')
         return value
 
-
 '''...Category'''
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
