@@ -179,7 +179,22 @@ class GameDeveloperSerializer(serializers.ModelSerializer):
     class Meta:
         model = GameDeveloper
         fields = '__all__'
-        
+
+class GameDeveloperCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GameDeveloper
+        fields = 'name'
+
+    def validate_name(self, value):
+        if GameDeveloper.objects.filter(name=value).exists():
+            raise serializers.ValidationError('Developer with this name already exists.')
+        if len(value) < 1:
+            raise serializers.ValidationError('Name must be at least 1 character.')
+        if len(value) > 30:
+            raise serializers.ValidationError('Name must be at most 30 characters.')
+        return value
+
+
 '''...Category'''
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

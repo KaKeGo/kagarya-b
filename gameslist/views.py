@@ -1,3 +1,5 @@
+import logging
+
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
@@ -16,7 +18,8 @@ from users.custom_permissions import UserRolePermissionFactory
 from .paginator import CustomPageNumberPagination
 
 from .models import (
-    GameList, Type, Category, PlatformCreator, Platform, Tag, Comment, CommentRaiting,
+    GameList, Type, Category, PlatformCreator, Platform, Tag, 
+    Comment, CommentRaiting, GameDeveloper,
 )
 from .serializers import (
     GamesListSerializer, GameListCreateSerializer, GameUpdateSerializer,
@@ -28,10 +31,13 @@ from .serializers import (
     CommentRatingCreateSerializer, CommentRaitingUpdateSerializer,
     TypeSerializer, TypeCreateSerializer, TypeUpdateSerializer, 
     CategoryCreateSerializer, CategorySerializer, CategoryUpdateSerializer,
+    GameDeveloperSerializer, GameDeveloperCreateSerializer,
 )
 from .filters import (
     GameListFilter
 )
+
+logger = logging.getLogger(__name__)
 
 
 '''Game List'''
@@ -108,7 +114,7 @@ class GameListDeleteView(APIView):
         game_list.delete()
         return Response({'message': 'Game deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
 
-'''Games event list'''
+'''...Games event list'''
 class RecentlyAddedGamesView(APIView):
     def get(self, request):
         games = GameList.objects.filter(status='public').order_by('-id')[:10]
@@ -145,7 +151,7 @@ class RecentlyReleasedGameView(APIView):
         serializer = GamesListSerializer(recently_released_games, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-'''Game List Entry'''
+'''...Game List Entry'''
 @method_decorator(csrf_protect, name='dispatch')
 class AddGameToProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -157,7 +163,7 @@ class AddGameToProfileView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-'''Platform Creator'''
+'''...Platform Creator'''
 class PlatformCreatorListView(APIView): 
     def get(self, request):
         creators = PlatformCreator.objects.all()
@@ -210,7 +216,7 @@ class PlatformCreatorDeleteView(APIView):
         platform_creator.delete()
         return Response({'message': 'Platform creator deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
-'''Platform'''
+'''...Platform'''
 class PlatformListView(APIView):
     def get(self, request):
         platforms = Platform.objects.all()
@@ -264,7 +270,7 @@ class PlatformDeleteView(APIView):
         platform.datele()
         return Response({'message': 'Platform deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
-'''Tag'''
+'''...Tag'''
 class TagListView(APIView):
     def get(self, request):
         tags = Tag.objects.all()
@@ -319,7 +325,7 @@ class TagDeleteView(APIView):
         tag_instance.delete()
         return Response({'message': 'Tag deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
 
-'''Comment'''
+'''...Comment'''
 class CommentListView(APIView):
     def get(self, request):
         comments = Comment.objects.all()
@@ -375,7 +381,7 @@ class CommentDeleteView(APIView):
         comment.delete()
         return Response({'message': 'Comment deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
-'''Comment Raiting'''
+'''...Comment Raiting'''
 @method_decorator(csrf_protect, name='dispatch')
 class CommentRatingCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated, ]
@@ -424,7 +430,7 @@ class CommentRaitingDeleteView(APIView):
         return Response({'message': 'Comment raiting deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
         
 
-'''Type'''
+'''...Type'''
 class TypeListView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
@@ -481,7 +487,7 @@ class TypeDeleteView(APIView):
         type_instance.delete()
         return Response({'message': 'Type deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
-'''..Category'''
+'''...Category'''
 class CategoryListView(APIView):
     permission_classes = [permissions.AllowAny, ]
     
@@ -502,7 +508,8 @@ class CategoryCreateView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        logger.error(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @method_decorator(csrf_protect, name='dispatch')
 class CategoryUpdateView(APIView):
@@ -537,3 +544,25 @@ class CategoryDeleteView(APIView):
         
         category_instance.delete()
         return Response({'message': 'Category deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)        
+
+'''...Game Developer'''
+
+class GameDeveloperListView(APIView):
+    
+    def get(self, request):
+        game_developer = GameDeveloper.objects.all()
+        serializer = GameDeveloperSerializer(game_developer, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+@method_decorator(csrf_protect, name='dispatch')
+class GameDeveloperCreateView(APIView):
+    permission_classes = [
+        UserRolePermissionFactory(['Admin', 'GameCreator'])()
+    ]
+
+    def post(self, request):
+        serializer = GameDeveloperCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
